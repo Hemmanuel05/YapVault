@@ -12,6 +12,7 @@ import { YapScoreGauge } from '@/components/yap-score-gauge';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function YapOptimizerClient() {
   const [draft, setDraft] = useState('');
@@ -19,6 +20,7 @@ export function YapOptimizerClient() {
   const [isFixing, setIsFixing] = useState(false);
   const [result, setResult] = useState<YapScoreFromDraftOutput | null>(null);
   const { toast } = useToast();
+  const [persona, setPersona] = useState<string>('default');
 
   const handleAnalyze = async () => {
     if (!draft.trim()) {
@@ -61,7 +63,8 @@ export function YapOptimizerClient() {
     setIsFixing(true);
 
     try {
-      const { improvedDraft } = await generateImprovedDraft({ draft });
+      const selectedPersona = persona === 'default' ? undefined : persona;
+      const { improvedDraft } = await generateImprovedDraft({ draft, persona: selectedPersona });
       setDraft(improvedDraft);
       // Clear previous results as the draft has changed
       setResult(null);
@@ -111,14 +114,26 @@ export function YapOptimizerClient() {
               )}
               <span className="ml-2">Analyze & Predict Score</span>
             </Button>
-            <Button onClick={handleFixTweet} disabled={isFixing || isLoading} variant="outline" className="w-full">
-              {isFixing ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <Wand2 />
-              )}
-              <span className="ml-2">Fix Tweet</span>
-            </Button>
+            <div className="flex gap-2 w-full">
+              <Select value={persona} onValueChange={setPersona}>
+                <SelectTrigger className="w-[150px] flex-shrink-0">
+                  <SelectValue placeholder="Select Persona" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="default">Default</SelectItem>
+                  <SelectItem value="The Wale">The Wale</SelectItem>
+                  <SelectItem value="The Bandit">The Bandit</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button onClick={handleFixTweet} disabled={isFixing || isLoading} variant="outline" className="w-full">
+                {isFixing ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  <Wand2 />
+                )}
+                <span className="ml-2">Fix Tweet</span>
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
