@@ -17,8 +17,12 @@ const GenerateImprovedDraftInputSchema = z.object({
     .string()
     .optional()
     .describe(
-      'The persona to adopt for the rewrite (e.g., "The Wale", "The Bandit", "The R2D2").'
+      'The persona to adopt for the rewrite (e.g., "The Wale", "The Bandit", "The R2D2", or a custom bio).'
     ),
+  isCustomPersona: z
+    .boolean()
+    .optional()
+    .describe('True if the persona string is a custom bio, not a predefined one.'),
 });
 export type GenerateImprovedDraftInput = z.infer<
   typeof GenerateImprovedDraftInputSchema
@@ -50,6 +54,11 @@ You will rewrite the user's draft to make it more engaging, clear, and likely to
 {{#if persona}}
 You MUST adopt the following persona for your rewrite:
 
+{{#if isCustomPersona}}
+**Custom Persona / Bio:**
+*   **Style:** Analyze the following bio/description and adopt its tone, voice, and subject matter expertise.
+*   **Bio:** {{{persona}}}
+{{else}}
 **Persona: {{{persona}}}**
 {{#ifCond persona '==' 'The Wale'}}
 *   **Style:** Concentrated, thoughtful, data-driven.
@@ -105,8 +114,8 @@ You MUST adopt the following persona for your rewrite:
 
     PS: let me know in the comments if I missed any other major events...
 {{/ifCond}}
-
 Rewrite the draft below to match the persona of **{{{persona}}}**.
+{{/if}}
 {{else}}
 **Default Persona: General Engagement Expert**
 *   Make the hook stronger.

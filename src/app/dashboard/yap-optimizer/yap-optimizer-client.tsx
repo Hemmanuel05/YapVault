@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { yapScoreFromDraft, YapScoreFromDraftOutput } from '@/ai/flows/yap-score-from-draft';
 import { generateImprovedDraft } from '@/ai/flows/generate-improved-draft';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { BotMessageSquare, Loader2, Wand2, ShieldCheck, HelpCircle } from 'lucide-react';
@@ -14,6 +14,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
 
 export function YapOptimizerClient() {
   const [draft, setDraft] = useState('');
@@ -22,6 +23,7 @@ export function YapOptimizerClient() {
   const [result, setResult] = useState<YapScoreFromDraftOutput | null>(null);
   const { toast } = useToast();
   const [persona, setPersona] = useState<string>('default');
+  const [customPersona, setCustomPersona] = useState('');
 
   const handleAnalyze = async () => {
     if (!draft.trim()) {
@@ -60,12 +62,27 @@ export function YapOptimizerClient() {
       });
       return;
     }
+    if (persona === 'custom' && !customPersona.trim()) {
+      toast({
+        title: 'Custom Persona is empty',
+        description: 'Please enter a bio or description for your custom persona.',
+        variant: 'destructive',
+      });
+      return;
+    }
 
     setIsFixing(true);
 
     try {
-      const selectedPersona = persona === 'default' ? undefined : persona;
-      const { improvedDraft } = await generateImprovedDraft({ draft, persona: selectedPersona });
+      const isCustomPersona = persona === 'custom';
+      const personaToSend = isCustomPersona ? customPersona : (persona === 'default' ? undefined : persona);
+      
+      const { improvedDraft } = await generateImprovedDraft({ 
+        draft, 
+        persona: personaToSend,
+        isCustomPersona,
+      });
+
       setDraft(improvedDraft);
       // Clear previous results as the draft has changed
       setResult(null);
@@ -97,6 +114,7 @@ export function YapOptimizerClient() {
       <Card>
         <CardHeader>
           <CardTitle>Post Draft</CardTitle>
+          <CardDescription>Analyze a post or have the AI rewrite it for you using a specific persona.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Textarea
@@ -106,36 +124,53 @@ export function YapOptimizerClient() {
             rows={8}
             className="text-base"
           />
-          <div className="flex flex-col sm:flex-row gap-2">
-            <Button onClick={handleAnalyze} disabled={isLoading || isFixing} className="w-full">
-              {isLoading ? (
-                <Loader2 className="animate-spin" />
-              ) : (
-                <BotMessageSquare />
-              )}
-              <span className="ml-2">Analyze & Predict Score</span>
-            </Button>
-            <div className="flex gap-2 w-full">
-              <Select value={persona} onValueChange={setPersona}>
-                <SelectTrigger className="w-[150px] flex-shrink-0">
-                  <SelectValue placeholder="Select Persona" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="default">Default</SelectItem>
-                  <SelectItem value="The Wale">The Wale</SelectItem>
-                  <SelectItem value="The Bandit">The Bandit</SelectItem>
-                  <SelectItem value="The R2D2">The R2D2</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button onClick={handleFixTweet} disabled={isFixing || isLoading} variant="outline" className="w-full">
-                {isFixing ? (
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Button onClick={handleAnalyze} disabled={isLoading || isFixing} className="w-full">
+                {isLoading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
-                  <Wand2 />
+                  <BotMessageSquare />
                 )}
-                <span className="ml-2">Fix Tweet</span>
+                <span className="ml-2">Analyze & Predict Score</span>
               </Button>
+              <Button onClick={handleFixTweet} disabled={isFixing || isLoading} variant="outline" className="w-full">
+                  {isFixing ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Wand2 />
+                  )}
+                  <span className="ml-2">Fix Tweet</span>
+                </Button>
             </div>
+            <div className="space-y-2">
+                <Label>Rewrite Persona</Label>
+                <Select value={persona} onValueChange={setPersona}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Persona" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default</SelectItem>
+                    <SelectItem value="The Wale">The Wale</SelectItem>
+                    <SelectItem value="The Bandit">The Bandit</SelectItem>
+                    <SelectItem value="The R2D2">The R2D2</SelectItem>
+                    <SelectItem value="custom">Custom Persona</SelectItem>
+                  </SelectContent>
+                </Select>
+            </div>
+
+            {persona === 'custom' && (
+              <div className="space-y-2 animate-in fade-in-50">
+                <Label htmlFor="custom-persona">Custom Persona Bio</Label>
+                <Textarea
+                  id="custom-persona"
+                  placeholder="e.g., 'Crypto researcher focused on DeFi. I write technical threads for an audience of developers and analysts.'"
+                  value={customPersona}
+                  onChange={(e) => setCustomPersona(e.target.value)}
+                  rows={3}
+                />
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
