@@ -44,7 +44,7 @@ export default function DashboardLayout({
                 </Avatar>
                 <div className="text-left group-data-[collapsible=icon]:hidden">
                     <p className="text-sm font-medium">Ike Zahuemma</p>
-                    <p className="text-xs text-muted-foreground">ikezahuemma@gmail.com</p>
+                    <p className="text-xs text-muted-foreground">@heisninja</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>

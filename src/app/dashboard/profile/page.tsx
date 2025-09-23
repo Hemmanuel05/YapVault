@@ -19,6 +19,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function ProfilePage() {
   const userAvatar = PlaceHolderImages.find((img) => img.id === 'avatar1');
+  const [username, setUsername] = useState('heisninja');
   const [email, setEmail] = useState('ikezahuemma@gmail.com');
   const [avatar, setAvatar] = useState(userAvatar?.imageUrl || '');
   const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
@@ -85,15 +86,27 @@ export default function ProfilePage() {
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="max-w-md bg-background"
-              />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="bg-background"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-background"
+                />
+              </div>
             </div>
             <Button type="submit" disabled={isSaving}>
               {isSaving && <Loader2 className="animate-spin" />}
