@@ -23,7 +23,6 @@ import { useAuth } from '@/hooks/use-auth';
 import { useEffect } from 'react';
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
-  const userAvatar = PlaceHolderImages.find(img => img.id === 'avatar1');
   const router = useRouter();
   const { user, isLoading } = useAuth();
 
@@ -45,6 +44,9 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
+
+  const avatarId = `avatar${(user.email?.length || 1) % 8 + 1}`;
+  const userAvatar = PlaceHolderImages.find(img => img.id === avatarId);
   
   return (
       <SidebarProvider>
