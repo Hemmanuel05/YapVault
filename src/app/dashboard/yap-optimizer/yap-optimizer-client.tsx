@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -91,7 +92,7 @@ function GeneratePersonaDialog({ onPersonaGenerated, children }: { onPersonaGene
           </DialogClose>
           <Button onClick={handleGenerate} disabled={isGenerating}>
             {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
-            Generate Persona
+            <span className="ml-2">Generate Persona</span>
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,3 +1,4 @@
+
 import {z} from 'genkit';
 
 export const GenerateImprovedDraftInputSchema = z.object({
