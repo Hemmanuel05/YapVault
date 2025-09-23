@@ -57,7 +57,7 @@ export default function LoginPage() {
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground"
+                className="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:bg-transparent"
                 onClick={() => setShowPassword((prev) => !prev)}
               >
                 {showPassword ? <EyeOff /> : <Eye />}

@@ -17,6 +17,7 @@ export function ContentIdeasClient() {
   const [result, setResult] = useState<GenerateContentIdeasOutput | null>(null);
   const [copiedStates, setCopiedStates] = useState<boolean[]>([]);
   const { toast } = useToast();
+  const [selectedIdea, setSelectedIdea] = useState<string | null>(null);
 
   const handleGenerate = async () => {
     if (!topic.trim()) {
@@ -30,6 +31,7 @@ export function ContentIdeasClient() {
 
     setIsLoading(true);
     setResult(null);
+    setSelectedIdea(null);
 
     try {
       const ideasResult = await generateContentIdeas({ topic });
@@ -58,8 +60,6 @@ export function ContentIdeasClient() {
       setCopiedStates(resetCopiedStates);
     }, 2000);
   };
-  
-  const [selectedIdea, setSelectedIdea] = useState('');
 
   return (
     <div className="grid gap-8 lg:grid-cols-2">
@@ -76,7 +76,6 @@ export function ContentIdeasClient() {
               placeholder="e.g., 'AI agents', 'zkSync', 'crypto market sentiment'"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              className="text-base"
             />
             <Button onClick={handleGenerate} disabled={isLoading} className="w-full">
               {isLoading ? (
@@ -89,7 +88,7 @@ export function ContentIdeasClient() {
           </CardContent>
         </Card>
 
-        {selectedIdea && (
+        {selectedIdea !== null && (
              <Card className="animate-in fade-in-50">
                 <CardHeader>
                     <CardTitle>Refine Your Idea</CardTitle>
@@ -102,7 +101,7 @@ export function ContentIdeasClient() {
                         value={selectedIdea} 
                         onChange={(e) => setSelectedIdea(e.target.value)}
                         rows={5}
-                        className="text-base font-mono"
+                        className="font-mono"
                     />
                 </CardContent>
              </Card>

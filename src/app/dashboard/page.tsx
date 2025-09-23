@@ -37,7 +37,7 @@ const features = [
   },
   {
     title: 'Authentic Reply Generator',
-    description: 'Craft replies that sound like a curious learner to build real connections and spark genuine conversation.',
+    description: 'Craft replies that the X algorithm loves, maximizing reach and sparking genuine conversations.',
     href: '/dashboard/reply-generator',
     icon: <MessageCircleQuestion className="mb-4 h-10 w-10 text-accent" />,
   }
