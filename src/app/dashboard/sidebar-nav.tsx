@@ -5,9 +5,10 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion, Home, SearchCheck } from 'lucide-react';
+import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion, Home, SearchCheck, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Separator } from '@/components/ui/separator';
 
 const navItems = [
   {
@@ -48,12 +49,34 @@ const navItems = [
   }
 ];
 
+const adminNavItems = [
+    {
+        href: '/dashboard/admin',
+        label: 'Admin',
+        icon: <Shield />,
+    }
+]
+
 export function SidebarNav() {
   const pathname = usePathname();
 
   return (
     <SidebarMenu>
       {navItems.map((item) => (
+        <SidebarMenuItem key={item.href}>
+          <Link href={item.href}>
+            <SidebarMenuButton
+              isActive={item.exact ? pathname === item.href : pathname.startsWith(item.href)}
+              tooltip={{ children: item.label, className: 'bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border' }}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </SidebarMenuButton>
+          </Link>
+        </SidebarMenuItem>
+      ))}
+      <Separator className="my-2" />
+      {adminNavItems.map((item) => (
         <SidebarMenuItem key={item.href}>
           <Link href={item.href}>
             <SidebarMenuButton
