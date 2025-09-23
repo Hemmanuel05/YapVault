@@ -17,7 +17,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { LogOut, User, Home } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ActivityLogProvider } from '@/hooks/use-activity-log';
-import { auth } from '@/lib/firebase';
+import { getFirebaseAuth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { AuthProvider } from '@/hooks/use-auth';
 
@@ -28,6 +28,7 @@ export default function DashboardLayout({
 }) {
   const userAvatar = PlaceHolderImages.find(img => img.id === 'avatar1');
   const router = useRouter();
+  const auth = getFirebaseAuth();
 
   const handleLogout = async () => {
     await auth.signOut();

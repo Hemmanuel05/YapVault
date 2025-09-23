@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { auth, db } from '@/lib/firebase';
+import { getFirebaseAuth, getFirebaseDb } from '@/lib/firebase';
 import { collection, addDoc, onSnapshot, query, orderBy, Timestamp } from 'firebase/firestore';
 import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 
@@ -31,6 +31,8 @@ const ActivityLogContext = createContext<ActivityLogContextType | undefined>(und
 export const ActivityLogProvider = ({ children }: { children: ReactNode }) => {
   const [activityLog, setActivityLog] = useState<ActivityLogEntry[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const auth = getFirebaseAuth();
+  const db = getFirebaseDb();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user: FirebaseUser | null) => {
@@ -50,7 +52,7 @@ export const ActivityLogProvider = ({ children }: { children: ReactNode }) => {
       }
     });
     return () => unsubscribe();
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     const q = query(collection(db, 'activityLog'), orderBy('timestamp', 'desc'));
@@ -62,7 +64,7 @@ export const ActivityLogProvider = ({ children }: { children: ReactNode }) => {
       setActivityLog(logs);
     });
     return () => unsubscribe();
-  }, []);
+  }, [db]);
 
   const addActivity = async (newActivity: Omit<ActivityLogEntry, 'user' | 'timestamp' | 'id'>) => {
     if (!currentUser) {

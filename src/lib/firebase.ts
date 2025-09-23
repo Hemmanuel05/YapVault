@@ -1,6 +1,6 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, type Auth } from 'firebase/auth';
+import { getFirestore, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   projectId: "studio-5407776230-a9a13",
@@ -12,8 +12,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
-const db = getFirestore(app);
+const app: FirebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-export { app, auth, db };
+const getFirebaseAuth = (): Auth => getAuth(app);
+const getFirebaseDb = (): Firestore => getFirestore(app);
+
+export { app, getFirebaseAuth, getFirebaseDb };
