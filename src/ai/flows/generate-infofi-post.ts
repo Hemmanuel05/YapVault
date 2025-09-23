@@ -23,7 +23,7 @@ export async function generateInfoFiPost(
 
 const prompt = ai.definePrompt({
   name: 'generateInfoFiPostPrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: googleAI.model('gemini-1.5-pro-latest'),
   input: {schema: GenerateInfoFiPostInputSchema},
   output: {schema: GenerateInfoFiPostOutputSchema},
   prompt: `# InfoFi Smart Content Generator (Kaito/Yap Points Optimized)
