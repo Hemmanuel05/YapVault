@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Wand2, Copy, Check, MessageCircleQuestion, Star, BarChart } from 'lucide-react';
+import { Loader2, Wand2, Copy, Check, MessageCircleQuestion, Star, BarChart, Paperclip, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import Image from 'next/image';
 
 export function ReplyGeneratorClient() {
   const [originalPost, setOriginalPost] = useState('');
@@ -16,12 +18,26 @@ export function ReplyGeneratorClient() {
   const [result, setResult] = useState<GenerateAuthenticReplyOutput | null>(null);
   const [isCopied, setIsCopied] = useState(false);
   const { toast } = useToast();
+  const [image, setImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleGenerate = async () => {
-    if (!originalPost.trim()) {
+    if (!originalPost.trim() && !image) {
       toast({
-        title: 'Original post is empty',
-        description: 'Please paste the text of the post you want to reply to.',
+        title: 'Post is empty',
+        description: 'Please provide some text or an image for the original post.',
         variant: 'destructive',
       });
       return;
@@ -31,7 +47,7 @@ export function ReplyGeneratorClient() {
     setResult(null);
 
     try {
-      const replyResult = await generateAuthenticReply({ originalPost });
+      const replyResult = await generateAuthenticReply({ originalPost, photoDataUri: image || undefined });
       setResult(replyResult);
     } catch (error) {
       console.error(error);
@@ -69,7 +85,7 @@ export function ReplyGeneratorClient() {
         <CardHeader>
           <CardTitle>Original Post</CardTitle>
           <CardDescription>
-            Paste the content of the X post you want to reply to.
+            Paste the content and optionally upload an image from the X post you want to reply to.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -80,6 +96,38 @@ export function ReplyGeneratorClient() {
             rows={8}
             className="text-base"
           />
+
+          {image ? (
+            <div className="relative">
+              <Image src={image} alt="Uploaded post image" width={500} height={300} className="rounded-lg object-cover w-full aspect-video" />
+              <Button
+                variant="destructive"
+                size="icon"
+                className="absolute top-2 right-2 h-7 w-7"
+                onClick={() => {
+                  setImage(null);
+                  setImageFile(null);
+                }}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <label htmlFor="image-upload" className="flex items-center gap-2 cursor-pointer text-sm font-medium text-primary hover:underline">
+                  <Paperclip className="h-4 w-4" />
+                  Attach Image (Optional)
+              </label>
+              <Input 
+                  id="image-upload" 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={handleImageChange}
+                  className="hidden"
+              />
+            </div>
+          )}
+
           <Button onClick={handleGenerate} disabled={isLoading} className="w-full">
             {isLoading ? (
               <Loader2 className="animate-spin" />

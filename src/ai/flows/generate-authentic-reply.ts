@@ -13,6 +13,12 @@ import {z} from 'genkit';
 
 export const GenerateAuthenticReplyInputSchema = z.object({
   originalPost: z.string().describe('The content of the X post to reply to.'),
+  photoDataUri: z
+    .string()
+    .optional()
+    .describe(
+      "An optional photo from the post, as a data URI that must include a MIME type and use Base64 encoding. Format: 'data:<mimetype>;base64,<encoded_data>'."
+    ),
 });
 export type GenerateAuthenticReplyInput = z.infer<
   typeof GenerateAuthenticReplyInputSchema
@@ -61,7 +67,7 @@ const prompt = ai.definePrompt({
 1. **Ask engaging questions** - the algorithm loves replies that generate responses
 2. **Add valuable context** or new perspectives to the conversation
 3. **Use mild controversy** or contrarian takes (respectfully)
-4. **Reference specific details** from the original post
+4. **Reference specific details** from the original post, including any images.
 5. **Create discussion threads** by taking debatable positions
 6. **Share relatable experiences** or analogies
 7. **Use emotional hooks** - surprise, curiosity, mild disagreement
@@ -94,10 +100,15 @@ const prompt = ai.definePrompt({
 
 **FINAL INSTRUCTION**: Reply like you're commenting on your friend's Instagram story. No thinking, no strategy, just pure human reaction. If you wouldn't say it out loud to someone sitting next to you, don't type it. React first, think never.
 
-**Based on the following original post, generate a reply that fits this style.**
+**Based on the following original post (and photo, if provided), generate a reply that fits this style.**
 
-**Original Post:**
+**Original Post Text:**
 {{{originalPost}}}
+
+{{#if photoDataUri}}
+**Original Post Photo:**
+{{media url=photoDataUri}}
+{{/if}}
 `,
 });
 
