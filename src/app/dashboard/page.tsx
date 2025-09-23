@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowRight, BotMessageSquare, Sparkles } from 'lucide-react';
+import { ArrowRight, BotMessageSquare, MessageSquareQuote, Sparkles } from 'lucide-react';
 
 const features = [
   {
@@ -23,6 +23,12 @@ const features = [
     href: '/dashboard/infofi-content',
     icon: <Sparkles className="mb-4 h-10 w-10 text-accent" />,
   },
+  {
+    title: 'Thread Generator',
+    description: 'Craft compelling X threads from a single topic, optimized for engagement and readability.',
+    href: '/dashboard/thread-generator',
+    icon: <MessageSquareQuote className="mb-4 h-10 w-10 text-accent" />,
+  }
 ];
 
 export default function DashboardPage() {

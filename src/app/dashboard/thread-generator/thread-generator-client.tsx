@@ -71,8 +71,9 @@ export function ThreadGeneratorClient() {
         <CardHeader>
           <CardTitle>Thread Source Material</CardTitle>
           <CardDescription>
-            Enter the main topic, notes, links, or docs for your thread. The AI will break it
-            down into a series of connected posts.
+            Provide the AI with notes, research, or content to analyze. Please
+            paste the content from any links directly, as the AI cannot access
+            external websites.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
