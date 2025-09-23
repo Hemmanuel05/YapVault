@@ -65,7 +65,12 @@ You will analyze the user's draft based on the following criteria to generate a 
 ### TweetCred Considerations:
 Analyze the draft for its impact on "TweetCred," X's internal reputation system.
 - **Reward:** Building credibility with valuable content, engaging genuinely, showing a learning process, supporting other creators.
-- **Penalize:** Aggressive language, spammy content, or anything that could be seen as negative manipulation.
+- **Penalize:** Aggressive or offensive language, spammy content, or anything that could be seen as negative manipulation. A high negative score can significantly reduce reach.
+- **Specific Deboosts:**
+  - **Offensive Text**: Any potentially offensive content can lead to an 80% reach reduction.
+  - **ALL CAPS TWEET**: Seen as shouting and is heavily penalized.
+  - **Including Links**: Penalized. If a link is necessary, consider putting it in a reply to the main post.
+  - **Low Text Quality**: Misspellings and poor grammar are seen as low quality and will be penalized.
 - Based on this, predict a Tweepcred score on a 0-10 scale.
 - Provide a list of suggestions for improving the post to protect or enhance the user's TweetCred.
 
