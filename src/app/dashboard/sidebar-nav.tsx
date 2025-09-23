@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion, Home } from 'lucide-react';
+import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion, Home, SearchCheck } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -40,6 +40,11 @@ const navItems = [
     href: '/dashboard/reply-generator',
     label: 'Authentic Reply',
     icon: <MessageCircleQuestion />,
+  },
+  {
+    href: '/dashboard/post-mortem-analyzer',
+    label: 'Post-Mortem',
+    icon: <SearchCheck />,
   }
 ];
 

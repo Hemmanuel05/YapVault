@@ -3,11 +3,12 @@
 import { useState } from 'react';
 import { yapScoreFromDraft, YapScoreFromDraftOutput } from '@/ai/flows/yap-score-from-draft';
 import { generateImprovedDraft } from '@/ai/flows/generate-improved-draft';
+import { generatePersonaFromPosts } from '@/ai/flows/generate-persona-from-posts';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { BotMessageSquare, Loader2, Wand2, ShieldCheck, HelpCircle } from 'lucide-react';
+import { BotMessageSquare, Loader2, Wand2, ShieldCheck, HelpCircle, User, Sparkles } from 'lucide-react';
 import { YapScoreGauge } from '@/components/yap-score-gauge';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -15,6 +16,79 @@ import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
+
+function GeneratePersonaDialog({ onPersonaGenerated, children }: { onPersonaGenerated: (persona: string) => void, children: React.ReactNode }) {
+  const [posts, setPosts] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const { toast } = useToast();
+
+  const handleGenerate = async () => {
+    const postArray = posts.split('\n').map(p => p.trim()).filter(p => p.length > 0);
+    if (postArray.length < 3) {
+      toast({
+        title: 'Not enough posts',
+        description: 'Please provide at least 3 posts, each on a new line.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    try {
+      const { persona } = await generatePersonaFromPosts({ posts: postArray });
+      onPersonaGenerated(persona);
+      toast({
+        title: 'Persona Generated!',
+        description: 'The custom persona has been populated for you.',
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Generation Failed',
+        description: 'Could not generate a persona. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        {children}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[625px]">
+        <DialogHeader>
+          <DialogTitle>Generate "Voice Clone" Persona</DialogTitle>
+          <DialogDescription>
+            Paste 3-10 of your past posts (one per line). The AI will analyze them to create a custom persona that matches your voice.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <Textarea
+            id="past-posts"
+            placeholder="- Just analyzed the new tokenomics for Project X...\n- My thoughts on the latest L2 scaling solution...\n- Here's why most people are wrong about AI agents..."
+            value={posts}
+            onChange={(e) => setPosts(e.target.value)}
+            rows={10}
+            className="font-mono"
+          />
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="ghost">Cancel</Button>
+          </DialogClose>
+          <Button onClick={handleGenerate} disabled={isGenerating}>
+            {isGenerating ? <Loader2 className="animate-spin" /> : <Sparkles />}
+            Generate Persona
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
 
 export function YapOptimizerClient() {
   const [draft, setDraft] = useState('');
@@ -161,10 +235,18 @@ export function YapOptimizerClient() {
 
             {persona === 'custom' && (
               <div className="space-y-2 animate-in fade-in-50">
-                <Label htmlFor="custom-persona">Custom Persona Bio</Label>
+                <div className="flex justify-between items-center">
+                    <Label htmlFor="custom-persona">Custom Persona Bio</Label>
+                    <GeneratePersonaDialog onPersonaGenerated={(p) => setCustomPersona(p)}>
+                         <Button variant="link" size="sm" className="p-0 h-auto text-accent">
+                            <Sparkles className="mr-1 h-3 w-3" />
+                            Generate with AI
+                        </Button>
+                    </GeneratePersonaDialog>
+                </div>
                 <Textarea
                   id="custom-persona"
-                  placeholder="e.g., 'Crypto researcher focused on DeFi. I write technical threads for an audience of developers and analysts.'"
+                  placeholder="e.g., 'Crypto researcher focused on DeFi. I write technical threads for an audience of developers and analysts.' Or, click 'Generate with AI' to clone your voice."
                   value={customPersona}
                   onChange={(e) => setCustomPersona(e.target.value)}
                   rows={3}

@@ -15,6 +15,7 @@ import {
   Sparkles,
   Lightbulb,
   MessageCircleQuestion,
+  SearchCheck,
 } from 'lucide-react';
 
 const features = [
@@ -52,6 +53,13 @@ const features = [
       'Craft replies that the X algorithm loves, maximizing reach and sparking genuine conversations.',
     href: '/dashboard/reply-generator',
     icon: <MessageCircleQuestion className="mb-4 h-8 w-8 text-accent" />,
+  },
+  {
+    title: 'Post-Mortem Analyzer',
+    description:
+      'Learn from your past content by analyzing its strengths and weaknesses for future improvement.',
+    href: '/dashboard/post-mortem-analyzer',
+    icon: <SearchCheck className="mb-4 h-8 w-8 text-accent" />,
   },
 ];
 
