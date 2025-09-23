@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { generateInfoFiPost, GenerateInfoFiPostOutput } from '@/ai/flows/generate-infofi-post';
-import { yapScoreFromDraft, YapScoreFromDraftOutput } from '@/ai/flows/yap-score-from-draft';
+import { generateInfoFiPost } from '@/ai/flows/generate-infofi-post';
+import { type GenerateInfoFiPostOutput } from '@/ai/schemas/generate-infofi-post';
+import { yapScoreFromDraft } from '@/ai/flows/yap-score-from-draft';
+import { type YapScoreFromDraftOutput } from '@/ai/schemas/yap-score-from-draft';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';

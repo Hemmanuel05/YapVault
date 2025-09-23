@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { generateThread, GenerateThreadOutput } from '@/ai/flows/generate-thread';
+import { generateThread } from '@/ai/flows/generate-thread';
+import { type GenerateThreadOutput } from '@/ai/schemas/generate-thread';
 import { Button } from '@/components/ui/button';
 import {
   Card,

@@ -4,26 +4,16 @@
  * @fileOverview A flow for generating a user persona from their past posts.
  *
  * - generatePersonaFromPosts - A function that analyzes posts and creates a persona description.
- * - GeneratePersonaFromPostsInput - The input type for the generatePersonaFromPosts function.
- * - GeneratePersonaFromPostsOutput - The return type for the generatePersonaFromPosts function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {
+    GeneratePersonaFromPostsInputSchema,
+    GeneratePersonaFromPostsOutputSchema,
+    type GeneratePersonaFromPostsInput,
+} from '@/ai/schemas/generate-persona-from-posts';
+import { GeneratePersonaFromPostsOutput } from '@/ai/schemas/generate-persona-from-posts';
 
-export const GeneratePersonaFromPostsInputSchema = z.object({
-  posts: z.array(z.string()).describe('An array of strings, where each string is a past post from the user.'),
-});
-export type GeneratePersonaFromPostsInput = z.infer<
-  typeof GeneratePersonaFromPostsInputSchema
->;
-
-export const GeneratePersonaFromPostsOutputSchema = z.object({
-  persona: z.string().describe('The generated persona description, written as a concise bio.'),
-});
-export type GeneratePersonaFromPostsOutput = z.infer<
-  typeof GeneratePersonaFromPostsOutputSchema
->;
 
 export async function generatePersonaFromPosts(
   input: GeneratePersonaFromPostsInput

@@ -4,40 +4,15 @@
  * @fileOverview Generates high-quality, technical crypto/AI analysis posts.
  *
  * - generateInfoFiPost - A function that accepts source material and returns optimized post variations.
- * - GenerateInfoFiPostInput - The input type for the generateInfoFiPost function.
- * - GenerateInfoFiPostOutput - The return type for the generateInfoFiPost function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const GenerateInfoFiPostInputSchema = z.object({
-  sourceMaterial: z.string().describe('The data, docs, or research to analyze.'),
-});
-export type GenerateInfoFiPostInput = z.infer<typeof GenerateInfoFiPostInputSchema>;
-
-const PostVariationSchema = z.object({
-  version: z.string().describe('The focus of this variation (e.g., "Technical Focus").'),
-  content: z.string().describe('The optimized post content.'),
-  target: z.string().describe('The target audience for this post.'),
-  yapPotential: z.string().describe('The predicted Yap potential (High/Medium/Low).'),
-});
-
-const GenerateInfoFiPostOutputSchema = z.object({
-  analysisSummary: z.object({
-    sourceMaterial: z.string().describe('A summary of what was analyzed.'),
-    keyFinding: z.string().describe('The main technical insight found.'),
-    marketRelevance: z.string().describe('Why this finding matters to the market right now.'),
-  }),
-  optimizedPosts: z.array(PostVariationSchema),
-  recommendation: z.object({
-    bestVersion: z.string().describe('Which version is recommended and why.'),
-    timing: z.string().describe('When to post for maximum impact.'),
-    followUp: z.string().describe('Potential thread expansion, related content ideas, or infographic suggestions.'),
-  }),
-});
-export type GenerateInfoFiPostOutput = z.infer<typeof GenerateInfoFiPostOutputSchema>;
-
+import {
+    GenerateInfoFiPostInputSchema,
+    GenerateInfoFiPostOutputSchema,
+    type GenerateInfoFiPostInput
+} from '@/ai/schemas/generate-infofi-post';
+import { GenerateInfoFiPostOutput } from '@/ai/schemas/generate-infofi-post';
 
 export async function generateInfoFiPost(
   input: GenerateInfoFiPostInput

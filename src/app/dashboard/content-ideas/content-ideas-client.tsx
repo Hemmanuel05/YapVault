@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { generateContentIdeas, GenerateContentIdeasOutput } from '@/ai/flows/generate-content-ideas';
+import { generateContentIdeas } from '@/ai/flows/generate-content-ideas';
+import { type GenerateContentIdeasOutput } from '@/ai/schemas/generate-content-ideas';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

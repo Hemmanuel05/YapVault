@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { yapScoreFromDraft, YapScoreFromDraftOutput } from '@/ai/flows/yap-score-from-draft';
+import { yapScoreFromDraft } from '@/ai/flows/yap-score-from-draft';
+import { type YapScoreFromDraftOutput } from '@/ai/schemas/yap-score-from-draft';
 import { generateImprovedDraft } from '@/ai/flows/generate-improved-draft';
 import { generatePersonaFromPosts } from '@/ai/flows/generate-persona-from-posts';
 import { Button } from '@/components/ui/button';

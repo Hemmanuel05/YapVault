@@ -4,36 +4,15 @@
  * @fileOverview A flow for improving an X/Twitter draft, with optional persona-based styling.
  *
  * - generateImprovedDraft - A function that improves a draft based on a selected persona.
- * - GenerateImprovedDraftInput - The input type for the generateImprovedDraft function.
- * - GenerateImprovedDraftOutput - The return type for the generateImproveddraft function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const GenerateImprovedDraftInputSchema = z.object({
-  draft: z.string().describe('The X/Twitter draft to improve.'),
-  persona: z
-    .string()
-    .optional()
-    .describe(
-      'The persona to adopt for the rewrite (e.g., "The Wale", "The Bandit", "The R2D2", or a custom bio).'
-    ),
-  isCustomPersona: z
-    .boolean()
-    .optional()
-    .describe('True if the persona string is a custom bio, not a predefined one.'),
-});
-export type GenerateImprovedDraftInput = z.infer<
-  typeof GenerateImprovedDraftInputSchema
->;
-
-const GenerateImprovedDraftOutputSchema = z.object({
-  improvedDraft: z.string().describe('The improved X/Twitter draft.'),
-});
-export type GenerateImprovedDraftOutput = z.infer<
-  typeof GenerateImprovedDraftOutputSchema
->;
+import {
+    GenerateImprovedDraftInputSchema,
+    GenerateImprovedDraftOutputSchema,
+    type GenerateImprovedDraftInput
+} from '@/ai/schemas/generate-improved-draft';
+import { GenerateImprovedDraftOutput } from '@/ai/schemas/generate-improved-draft';
 
 export async function generateImprovedDraft(
   input: GenerateImprovedDraftInput

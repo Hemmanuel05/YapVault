@@ -4,27 +4,15 @@
  * @fileOverview Calculates a Yap score and Tweepcred score for a given X post draft.
  *
  * - yapScoreFromDraft - A function that accepts an X post draft and returns a Yap score and Tweepcred analysis.
- * - YapScoreFromDraftInput - The input type for the yapScoreFromDraft function.
- * - YapScoreFromDraftOutput - The return type for the yapScoreFromDraft function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const YapScoreFromDraftInputSchema = z.object({
-  draft: z.string().describe('The X post draft to analyze.'),
-});
-export type YapScoreFromDraftInput = z.infer<typeof YapScoreFromDraftInputSchema>;
-
-const YapScoreFromDraftOutputSchema = z.object({
-  yapScore: z.number().describe('The predicted Yap score (0-10 scale).'),
-  sentiment: z.string().describe('The sentiment of the draft (positive, negative, neutral).'),
-  keywords: z.array(z.string()).describe('Relevant keywords found in the draft.'),
-  suggestions: z.array(z.string()).describe('Suggestions to improve the Yap score based on the modern X algorithm.'),
-  tweepcredScore: z.number().describe('The predicted Tweepcred score (0-10 scale).'),
-  tweepcredSuggestions: z.array(z.string()).describe('Suggestions to improve the Tweepcred score.'),
-});
-export type YapScoreFromDraftOutput = z.infer<typeof YapScoreFromDraftOutputSchema>;
+import {
+    YapScoreFromDraftInputSchema,
+    YapScoreFromDraftOutputSchema,
+    type YapScoreFromDraftInput
+} from '@/ai/schemas/yap-score-from-draft';
+import { YapScoreFromDraftOutput } from '@/ai/schemas/yap-score-from-draft';
 
 export async function yapScoreFromDraft(input: YapScoreFromDraftInput): Promise<YapScoreFromDraftOutput> {
   return yapScoreFromDraftFlow(input);

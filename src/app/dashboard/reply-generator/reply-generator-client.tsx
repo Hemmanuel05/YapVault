@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { generateAuthenticReply, GenerateAuthenticReplyOutput } from '@/ai/flows/generate-authentic-reply';
+import { generateAuthenticReply } from '@/ai/flows/generate-authentic-reply';
+import { type GenerateAuthenticReplyOutput } from '@/ai/schemas/generate-authentic-reply';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';

@@ -4,23 +4,15 @@
  * @fileOverview A flow for generating an X/Twitter thread from a topic.
  *
  * - generateThread - A function that generates a thread based on a topic and desired length.
- * - GenerateThreadInput - The input type for the generateThread function.
- * - GenerateThreadOutput - The return type for the generateThread function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const GenerateThreadInputSchema = z.object({
-  sourceMaterial: z.string().describe('The topic, source material, docs, or links for the thread.'),
-  numPosts: z.number().min(2).max(25).describe('The number of posts to include in the thread.'),
-});
-export type GenerateThreadInput = z.infer<typeof GenerateThreadInputSchema>;
-
-const GenerateThreadOutputSchema = z.object({
-  thread: z.array(z.string()).describe('An array of strings, where each string is a single post in the thread.'),
-});
-export type GenerateThreadOutput = z.infer<typeof GenerateThreadOutputSchema>;
+import {
+    GenerateThreadInputSchema,
+    GenerateThreadOutputSchema,
+    type GenerateThreadInput,
+} from '@/ai/schemas/generate-thread';
+import { GenerateThreadOutput } from '@/ai/schemas/generate-thread';
 
 export async function generateThread(
   input: GenerateThreadInput

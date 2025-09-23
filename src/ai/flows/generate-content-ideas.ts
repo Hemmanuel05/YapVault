@@ -4,31 +4,15 @@
  * @fileOverview A flow for generating content ideas based on a topic.
  *
  * - generateContentIdeas - A function that generates post ideas from a keyword or topic.
- * - GenerateContentIdeasInput - The input type for the generateContentIdeas function.
- * - GenerateContentIdeasOutput - The return type for the generateContentIdeas function.
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
-
-const GenerateContentIdeasInputSchema = z.object({
-  topic: z.string().describe('The keyword or topic to brainstorm ideas for.'),
-});
-export type GenerateContentIdeasInput = z.infer<
-  typeof GenerateContentIdeasInputSchema
->;
-
-const IdeaSchema = z.object({
-    title: z.string().describe("A short, catchy title for the content angle (e.g., 'The Contrarian Take')."),
-    idea: z.string().describe("The generated post idea or hook."),
-});
-
-const GenerateContentIdeasOutputSchema = z.object({
-  ideas: z.array(IdeaSchema).describe('An array of generated content ideas.'),
-});
-export type GenerateContentIdeasOutput = z.infer<
-  typeof GenerateContentIdeasOutputSchema
->;
+import {
+    GenerateContentIdeasInputSchema,
+    GenerateContentIdeasOutputSchema,
+    type GenerateContentIdeasInput,
+} from '@/ai/schemas/generate-content-ideas';
+import { GenerateContentIdeasOutput } from '@/ai/schemas/generate-content-ideas';
 
 export async function generateContentIdeas(
   input: GenerateContentIdeasInput

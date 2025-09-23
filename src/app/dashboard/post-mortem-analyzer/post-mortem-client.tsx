@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { analyzePublishedPost, AnalyzePublishedPostOutput } from '@/ai/flows/analyze-published-post';
+import { analyzePublishedPost } from '@/ai/flows/analyze-published-post';
+import { type AnalyzePublishedPostOutput } from '@/ai/schemas/analyze-published-post';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
