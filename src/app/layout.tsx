@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import { AuthProvider } from '@/hooks/use-auth';
+import { ActivityLogProvider } from '@/hooks/use-activity-log';
 
 export const metadata: Metadata = {
   title: 'YapVault',
@@ -34,7 +35,9 @@ export default function RootLayout({
         )}
       >
         <AuthProvider>
-          {children}
+          <ActivityLogProvider>
+            {children}
+          </ActivityLogProvider>
         </AuthProvider>
         <Toaster />
       </body>
