@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -22,6 +23,7 @@ export async function generateThread(
 
 const prompt = ai.definePrompt({
   name: 'generateThreadPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateThreadInputSchema},
   output: {schema: GenerateThreadOutputSchema},
   prompt: `You are an expert X/Twitter thread writer. Your task is to take the user's source material and create a compelling, easy-to-read thread with a specified number of posts.

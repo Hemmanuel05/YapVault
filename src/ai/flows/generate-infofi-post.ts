@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -22,6 +23,7 @@ export async function generateInfoFiPost(
 
 const prompt = ai.definePrompt({
   name: 'generateInfoFiPostPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateInfoFiPostInputSchema},
   output: {schema: GenerateInfoFiPostOutputSchema},
   prompt: `# InfoFi Smart Content Generator (Kaito/Yap Points Optimized)

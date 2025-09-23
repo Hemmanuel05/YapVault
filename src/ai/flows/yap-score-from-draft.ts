@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -20,6 +21,7 @@ export async function yapScoreFromDraft(input: YapScoreFromDraftInput): Promise<
 
 const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
   prompt: `# X Algorithm Content Optimizer Prompt (2025 Update)

@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -23,6 +24,7 @@ export async function generatePersonaFromPosts(
 
 const prompt = ai.definePrompt({
   name: 'generatePersonaFromPostsPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GeneratePersonaFromPostsInputSchema},
   output: {schema: GeneratePersonaFromPostsOutputSchema},
   prompt: `You are an expert brand strategist and social media analyst. Your task is to analyze a collection of a user's past X/Twitter posts and synthesize a concise, insightful persona description.

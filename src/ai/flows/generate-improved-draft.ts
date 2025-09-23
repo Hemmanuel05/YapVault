@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -22,6 +23,7 @@ export async function generateImprovedDraft(
 
 const prompt = ai.definePrompt({
   name: 'generateImprovedDraftPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateImprovedDraftInputSchema},
   output: {schema: GenerateImprovedDraftOutputSchema},
   prompt: `You are an expert social media manager specializing in creating engaging content for X. You understand the modern X algorithm, which prioritizes replies and quality content over hashtags.

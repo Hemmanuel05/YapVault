@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -23,6 +24,7 @@ export async function generateAuthenticReply(
 
 const prompt = ai.definePrompt({
   name: 'generateAuthenticReplyPrompt',
+  model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: GenerateAuthenticReplyInputSchema},
   output: {schema: GenerateAuthenticReplyOutputSchema},
   prompt: `# X ALGORITHM-OPTIMIZED REPLY GENERATION PROMPT
