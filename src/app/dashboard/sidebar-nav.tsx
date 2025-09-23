@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare, Sparkles } from 'lucide-react';
+import { BotMessageSquare, Sparkles, MessageSquareQuote } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -20,6 +20,11 @@ const navItems = [
     label: 'InfoFi Content',
     icon: <Sparkles />,
   },
+  {
+    href: '/dashboard/thread-generator',
+    label: 'Thread Generator',
+    icon: <MessageSquareQuote />,
+  }
 ];
 
 export function SidebarNav() {
