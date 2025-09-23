@@ -24,7 +24,6 @@ const prompt = ai.definePrompt({
   name: 'generateImprovedDraftPrompt',
   input: {schema: GenerateImprovedDraftInputSchema},
   output: {schema: GenerateImprovedDraftOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert social media manager specializing in creating engaging content for X. You understand the modern X algorithm, which prioritizes replies and quality content over hashtags.
 
 You will rewrite the user's draft to make it more engaging, clear, and likely to spark conversation.
@@ -51,7 +50,7 @@ You MUST adopt the following persona for your rewrite:
     *   The voice is that of a knowledgeable, respected community member sharing carefully considered insights.
 {{/if}}
 {{#if (eq persona "The Bandit")}}
-*   **Style:** Comedic, witty, high-frequency.
+*   "Style:** Comedic, witty, high-frequency.
 *   **Tactics:**
     *   Alternates between informative project posts and random, timely comedy.
     *   Uses wit and timing to create humor.
@@ -118,9 +117,10 @@ const generateImprovedDraftFlow = ai.defineFlow(
     inputSchema: GenerateImprovedDraftInputSchema,
     outputSchema: GenerateImprovedDraftOutputSchema,
   },
-  async input => {
+  async (input) => {
     try {
-        const {output} = await prompt(input);
+        const model = 'gemini-1.5-flash-latest';
+        const {output} = await prompt(input, { model });
         return output!;
     } catch(e: any) {
         console.error(e);
