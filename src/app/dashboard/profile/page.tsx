@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProfilePage() {
   const { user, isLoading } = useAuth();
@@ -88,7 +89,7 @@ export default function ProfilePage() {
                     <div className="space-y-6">
                         <div className="flex items-center gap-4">
                             <Skeleton className="h-20 w-20 rounded-full" />
-                            <Skeleton className="h-10 w-xs" />
+                            <Skeleton className="h-10 w-48" />
                         </div>
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                              <div className="space-y-2">
