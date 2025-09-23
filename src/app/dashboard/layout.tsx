@@ -40,11 +40,11 @@ export default function DashboardLayout({
               <Button variant="ghost" className="h-12 w-full justify-start gap-2 px-2">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={userAvatar?.imageUrl} alt="User avatar" data-ai-hint="person portrait" />
-                  <AvatarFallback>A</AvatarFallback>
+                  <AvatarFallback>IZ</AvatarFallback>
                 </Avatar>
                 <div className="text-left group-data-[collapsible=icon]:hidden">
-                    <p className="text-sm font-medium">Admin</p>
-                    <p className="text-xs text-muted-foreground">admin@kaito.ai</p>
+                    <p className="text-sm font-medium">Ike Zahuemma</p>
+                    <p className="text-xs text-muted-foreground">ikezahuemma@gmail.com</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>

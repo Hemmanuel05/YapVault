@@ -19,7 +19,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function ProfilePage() {
   const userAvatar = PlaceHolderImages.find((img) => img.id === 'avatar1');
-  const [email, setEmail] = useState('admin@kaito.ai');
+  const [email, setEmail] = useState('ikezahuemma@gmail.com');
   const [avatar, setAvatar] = useState(userAvatar?.imageUrl || '');
   const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -74,7 +74,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-4">
                 <Avatar className="h-20 w-20">
                   <AvatarImage src={avatar} alt="User avatar" data-ai-hint="person portrait" />
-                  <AvatarFallback>A</AvatarFallback>
+                  <AvatarFallback>IZ</AvatarFallback>
                 </Avatar>
                 <Input
                   id="picture"
