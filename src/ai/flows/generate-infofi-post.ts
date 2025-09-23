@@ -52,7 +52,7 @@ const prompt = ai.definePrompt({
   prompt: `# InfoFi Smart Content Generator (Kaito/Yap Points Optimized)
 
 ## Objective
-Generate high-quality, technical crypto/AI analysis posts that earn Yap points through well-researched insights. Focus on short, smart observations that demonstrate deep understanding and provide genuine value to the InfoFi ecosystem.
+Generate high-quality, technical crypto/AI analysis posts that earn Yap points through well-researched insights. Focus on short, smart observations that demonstrate deep understanding and provide genuine value to the InfoFi ecosystem. Your output should be clean, plain text without any markdown, underscores, or excessive punctuation.
 
 ## Target Audience
 - Crypto researchers and analysts
@@ -153,7 +153,7 @@ When relevant, include:
 
 Based on the user's source material: {{{sourceMaterial}}}
 
-Please generate the analysis and post variations now.
+Please generate the analysis and post variations now. The output must be clean, plain text. Do not use any markdown formatting like underscores or asterisks.
 `,
 });
 
