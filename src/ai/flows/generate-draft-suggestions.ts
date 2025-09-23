@@ -40,9 +40,9 @@ const prompt = ai.definePrompt({
   name: 'generateDraftSuggestionsPrompt',
   input: {schema: GenerateDraftSuggestionsInputSchema},
   output: {schema: GenerateDraftSuggestionsOutputSchema},
-  prompt: `You are an expert social media manager specializing in creating engaging content for X/Twitter.
+  prompt: `You are an expert social media manager specializing in creating engaging content for X. You understand the modern X algorithm, which prioritizes replies and quality content over hashtags.
 
-You will use the trending topic and successful past posts to generate a list of X/Twitter draft suggestions.
+You will use the trending topic and successful past posts to generate a list of X draft suggestions.
 
 Trending Topic: {{{trendingTopic}}}
 
@@ -51,7 +51,7 @@ Successful Past Posts:
 - {{{this}}}
 {{/each}}
 
-Generate a list of X/Twitter draft suggestions that are likely to be engaging to the Kaito AI community. Make sure to include relevant hashtags.
+Generate a list of X draft suggestions that are likely to be engaging to the Kaito AI community. The drafts should be designed to spark conversation and replies. Do not include hashtags unless they are a core part of the topic itself.
 `,
 });
 

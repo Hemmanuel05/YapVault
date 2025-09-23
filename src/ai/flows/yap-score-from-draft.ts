@@ -20,7 +20,7 @@ const YapScoreFromDraftOutputSchema = z.object({
   yapScore: z.number().describe('The predicted Yap score (0-10 scale).'),
   sentiment: z.string().describe('The sentiment of the draft (positive, negative, neutral).'),
   keywords: z.array(z.string()).describe('Relevant keywords found in the draft.'),
-  suggestions: z.array(z.string()).describe('Suggestions to improve the Yap score.'),
+  suggestions: z.array(z.string()).describe('Suggestions to improve the Yap score based on the modern X algorithm.'),
 });
 export type YapScoreFromDraftOutput = z.infer<typeof YapScoreFromDraftOutputSchema>;
 
@@ -32,7 +32,7 @@ const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
-  prompt: `You are an AI Yap score predictor for the Kaito community called YapVault.
+  prompt: `You are an AI Yap score predictor for the Kaito community called YapVault. You are an expert on the modern X algorithm, which rewards high-quality content and replies, and does not prioritize hashtags.
 
   Analyze the following X post draft.
 
@@ -47,7 +47,7 @@ const yapScorePrompt = ai.definePrompt({
   Also provide:
   - A sentiment analysis (positive, negative, neutral).
   - A list of the relevant keywords found.
-  - A list of suggestions to improve the score (e.g., "Add a question to encourage replies.").
+  - A list of suggestions to improve the score. Suggestions should focus on modern X engagement strategies, like asking open-ended questions, making a controversial (but respectful) statement to spark debate, or improving clarity. Avoid suggesting hashtags.
 `,
 });
 
@@ -88,7 +88,7 @@ const yapScoreFromDraftFlow = ai.defineFlow(
 
     // Add a default suggestion if none are returned
     if (!output.suggestions || output.suggestions.length === 0) {
-      output.suggestions = ["Add a question for 2-3x reply weights."];
+      output.suggestions = ["Try asking an open-ended question to encourage more detailed replies."];
     }
     
     return {
