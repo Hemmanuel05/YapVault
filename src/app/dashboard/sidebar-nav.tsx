@@ -5,11 +5,17 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion } from 'lucide-react';
+import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion, Home } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const navItems = [
+  {
+    href: '/dashboard',
+    label: 'Dashboard',
+    icon: <Home />,
+    exact: true,
+  },
   {
     href: '/dashboard/yap-optimizer',
     label: 'Yap Optimizer',
@@ -46,7 +52,7 @@ export function SidebarNav() {
         <SidebarMenuItem key={item.href}>
           <Link href={item.href}>
             <SidebarMenuButton
-              isActive={pathname.startsWith(item.href)}
+              isActive={item.exact ? pathname === item.href : pathname.startsWith(item.href)}
               tooltip={{ children: item.label, className: 'bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border' }}
             >
               {item.icon}
