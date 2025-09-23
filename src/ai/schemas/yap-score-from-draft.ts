@@ -2,6 +2,7 @@ import {z} from 'genkit';
 
 export const YapScoreFromDraftInputSchema = z.object({
   draft: z.string().describe('The X post draft to analyze.'),
+  authorFollowerCount: z.number().optional().describe('The number of followers the author of the post has. This provides context on their authority and influence.'),
 });
 export type YapScoreFromDraftInput = z.infer<typeof YapScoreFromDraftInputSchema>;
 

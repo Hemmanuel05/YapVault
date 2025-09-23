@@ -24,61 +24,63 @@ const yapScorePrompt = ai.definePrompt({
   model: 'googleai/gemini-1.5-flash-latest',
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
-  prompt: `# X Algorithm Content Optimizer Prompt (2025 Update)
+  prompt: `# X Algorithm Content Optimizer & Authority Analyst (2025)
 
-## Context & Objectives
-You are an advanced content optimization AI designed to help creators maximize engagement on X (formerly Twitter) in 2025. Your goal is to analyze content based on the new algorithm changes to build genuine brand authority.
+## CONTEXT & OBJECTIVE
+You are an expert X (Twitter) strategist. Your purpose is to analyze a post draft and predict its performance based on the 2025 algorithm, which values authentic engagement, authority, and "intellectual alpha." You must also assess its impact on the author's "TweetCred," an internal reputation score.
 
-## 2025 X Algorithm Key Changes & TweetCred System
-- **Small Account Prioritization**: Algorithm now favors content from smaller/emerging accounts.
-- **TweetCred Reputation System**: Still active - behavior-based scoring determines reach.
-- **Authentic Engagement Focus**: Values genuine conversations over vanity metrics.
-- **Severe Penalties for Algorithm Violations**: Up to 80% reach reduction for infractions.
+## ANALYSIS FRAMEWORK
 
-### Critical Algorithm Penalties to Check For:
-- **Offensive Text**: 80% reach reduction.
-- **ALL CAPS TWEET**: Seen as shouting and is heavily penalized.
-- **Including Links**: Penalized. If a link is necessary, consider putting it in a reply to the main post.
-- **Low Text Quality**: Misspellings and poor grammar are seen as low quality and will be penalized.
-- **Replying to accounts that don’t follow you**: Can be seen as spammy.
-- **Spammy posts**: Generic, repetitive content is penalized.
+### Author Context (If Provided)
+{{#if authorFollowerCount}}
+- **Author Authority:** HIGH. This user has {{authorFollowerCount}} followers. Their content should be evaluated as a thought leader. The "Small Account Advantage" does not apply. Instead, focus on the quality of the insight and its potential to lead a high-level discussion.
+{{else}}
+- **Author Authority:** STANDARD. This user is likely a small or emerging account. Prioritize authenticity, niche expertise, and engagement-driving questions.
+{{/if}}
 
-## Analysis Framework
+### Primary Analysis: Yap Score (1-10)
+Analyze the draft to generate a "Yap Score" based on these weighted criteria:
 
-### Primary Analysis Criteria (Yap Score 1-10):
-You will analyze the user's draft based on the following criteria to generate a "Yap Score".
-**1. Hook Strength (25% weight)**
-- Does the first 1-2 words grab attention?
-- Does it create a curiosity gap or controversy?
-**2. Engagement Catalyst (30% weight)**
-- Does it contain direct questions or spark debate?
-- Does it use "you" language?
-**3. Small Account Advantage (20% weight)**
-- Does it have an authentic, personal voice?
-- Does it showcase niche expertise or a contrarian take?
-**4. Format Optimization (15% weight)**
-- Is the length optimal (150-220 characters)?
-- Does it use line breaks and emojis effectively?
-- Hashtag usage should be minimal (1-2 max).
-**5. Brand Consistency (10% weight)**
-- Does it align with a creator's likely voice?
+**1. Intellectual Alpha & Insight (40% Weight)**
+- Does the post offer a unique, non-obvious, or valuable perspective?
+- Does it present a strong, coherent thesis or framework for thinking about a topic?
+- Is it data-backed, even if conceptually?
+- **High Score:** Presents a novel idea that makes people think.
+- **Low Score:** Generic, widely known information.
 
-### TweetCred Considerations:
-Analyze the draft for its impact on "TweetCred," X's internal reputation system.
+**2. Hook Strength & Framing (25% Weight)**
+- How well does the opening sentence grab attention and frame the topic?
+- Does it create a curiosity gap or present a bold, contrarian statement?
+- **High Score:** An immediate attention-grabber that forces the reader to continue.
+- **Low Score:** A soft, passive opening.
+
+**3. Discussion & Engagement Potential (25% Weight)**
+- Does the post spark high-level debate or encourage others to share their own insights?
+- This is different from a simple question. It's about the post's capacity to be a conversational centerpiece.
+- **High Score:** The topic is debatable and has multiple layers.
+- **Low Score:** A closed statement that is hard to build upon.
+
+**4. Format & Readability (10% Weight)**
+- Is the post easy to scan? Does it use formatting (line breaks, lists) to enhance clarity?
+- Is the length optimal (150-250 characters)?
+
+### Secondary Analysis: TweetCred (0-10)
+Analyze the draft's impact on the author's reputation.
+
 - **Reward:** Building credibility with valuable content, engaging genuinely, showing a learning process, supporting other creators.
-- **Penalize:** Aggressive or offensive language, spammy content, or anything that could be seen as negative manipulation. A high negative score can significantly reduce reach.
-- **Specific Deboosts:**
-  - **Offensive Text**: Any potentially offensive content can lead to an 80% reach reduction.
-  - **ALL CAPS TWEET**: Seen as shouting and is heavily penalized.
-  - **Including Links**: Penalized. If a link is necessary, consider putting it in a reply to the main post.
-  - **Low Text Quality**: Misspellellings and poor grammar are seen as low quality and will be penalized.
-- Based on this, predict a Tweepcred score on a 0-10 scale.
-- Provide a list of suggestions for improving the post to protect or enhance the user's TweetCred.
+- **Penalize:** Aggressive or offensive language, spammy content, or anything that could be seen as negative manipulation.
+- **Specific Deboosts to Check For:**
+  - Offensive Text: (80% reach reduction)
+  - ALL CAPS TWEET: (Heavy penalty)
+  - Including Links: (Penalty)
+  - Low Text Quality (Spelling/Grammar): (Penalty)
 
-### Instructions:
-Analyze the following draft. Provide a Yap Score, a Tweepcred score, a sentiment analysis, relevant keywords, and actionable suggestions for both scores based on the framework above.
+- Based on this, predict a Tweepcred score and provide actionable suggestions to protect or enhance it.
 
-Draft:
+### INSTRUCTIONS
+Analyze the following draft. Provide a Yap Score, a Tweepcred score, sentiment, keywords, and actionable suggestions for both scores based on the complete framework above.
+
+**Draft to Analyze:**
 {{{draft}}}
 `,
 });
@@ -90,11 +92,9 @@ const yapScoreFromDraftFlow = ai.defineFlow(
     outputSchema: YapScoreFromDraftOutputSchema,
   },
   async input => {
-    const result = await yapScorePrompt(input);
-    const output = result.output;
-
+    const {output} = await prompt(input);
     if (!output) {
-        throw new Error("AI failed to generate a response.");
+      throw new Error("AI failed to generate a response.");
     }
 
     let score = output.yapScore;

@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { useActivityLog } from '@/hooks/use-activity-log';
+import { Input } from '@/components/ui/input';
 
 function GeneratePersonaDialog({ onPersonaGenerated, children }: { onPersonaGenerated: (persona: string) => void, children: React.ReactNode }) {
   const [posts, setPosts] = useState('');
@@ -107,6 +108,7 @@ export function YapOptimizerClient() {
   const [persona, setPersona] = useState<string>('default');
   const [customPersona, setCustomPersona] = useState('');
   const { addActivity } = useActivityLog();
+  const [followerCount, setFollowerCount] = useState<number | undefined>(undefined);
 
   const handleAnalyze = async () => {
     if (!draft.trim()) {
@@ -122,20 +124,31 @@ export function YapOptimizerClient() {
     setResult(null);
 
     try {
-      const analysisResult = await yapScoreFromDraft({ draft });
+      const analysisResult = await yapScoreFromDraft({ 
+        draft, 
+        authorFollowerCount: followerCount 
+      });
       setResult(analysisResult);
       addActivity({
         feature: 'Yap Optimizer',
         action: 'Analyzed Draft',
         details: `Predicted Yap score for draft: "${draft.substring(0, 40)}..."`,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       toast({
-        title: 'Analysis failed',
-        description: 'Something went wrong. Please try again.',
+        title: 'Analysis Failed',
+        description: error.message || 'An unexpected error occurred while analyzing the draft. Please check the console for details.',
         variant: 'destructive',
       });
+      setResult({
+        yapScore: 0,
+        tweepcredScore: 0,
+        sentiment: 'N/A',
+        keywords: [],
+        suggestions: ['An unexpected error occurred while analyzing the draft. Please check the console for details.'],
+        tweepcredSuggestions: ['Analysis could not be completed.'],
+      })
     } finally {
       setIsLoading(false);
     }
@@ -218,6 +231,18 @@ export function YapOptimizerClient() {
             className="text-base"
           />
           <div className="space-y-4">
+             <div className="space-y-2">
+              <Label htmlFor="follower-count">Author Follower Count (Optional)</Label>
+              <Input
+                id="follower-count"
+                type="number"
+                placeholder="e.g., 150000"
+                value={followerCount === undefined ? '' : followerCount}
+                onChange={(e) => setFollowerCount(e.target.value === '' ? undefined : parseInt(e.target.value))}
+                className="bg-background"
+              />
+              <p className="text-xs text-muted-foreground">Provide follower count for more accurate authority analysis.</p>
+            </div>
             <div className="flex flex-col sm:flex-row gap-2">
               <Button onClick={handleAnalyze} disabled={isLoading || isFixing} className="w-full">
                 {isLoading ? (
