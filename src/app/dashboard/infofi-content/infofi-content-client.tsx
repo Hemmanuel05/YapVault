@@ -2,20 +2,36 @@
 
 import { useState } from 'react';
 import { generateInfoFiPost, GenerateInfoFiPostOutput } from '@/ai/flows/generate-infofi-post';
+import { yapScoreFromDraft, YapScoreFromDraftOutput } from '@/ai/flows/yap-score-from-draft';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Sparkles, Copy, Check } from 'lucide-react';
+import { Loader2, Sparkles, Copy, Check, BotMessageSquare, ShieldCheck, HelpCircle } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
+import { YapScoreGauge } from '@/components/yap-score-gauge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Separator } from '@/components/ui/separator';
 
 export function InfoFiContentClient() {
   const [sourceMaterial, setSourceMaterial] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<GenerateInfoFiPostOutput | null>(null);
+  const [yapResult, setYapResult] = useState<YapScoreFromDraftOutput | null>(null);
   const { toast } = useToast();
   const [copiedStates, setCopiedStates] = useState<boolean[]>([]);
+
+  const getSentimentBadgeVariant = (sentiment: string) => {
+    switch (sentiment.toLowerCase()) {
+      case 'positive':
+        return 'default';
+      case 'negative':
+        return 'destructive';
+      default:
+        return 'secondary';
+    }
+  };
 
   const handleGenerate = async () => {
     if (!sourceMaterial.trim()) {
@@ -29,11 +45,22 @@ export function InfoFiContentClient() {
 
     setIsLoading(true);
     setResult(null);
+    setYapResult(null);
 
     try {
       const generationResult = await generateInfoFiPost({ sourceMaterial });
       setResult(generationResult);
       setCopiedStates(new Array(generationResult.optimizedPosts.length).fill(false));
+
+      // Now, analyze the recommended post
+      const recommendedPostVersion = generationResult.recommendation.bestVersion.split(' ')[0].replace(':', '');
+      const recommendedPost = generationResult.optimizedPosts.find(p => p.version.toLowerCase().includes(recommendedPostVersion.toLowerCase()));
+      
+      if (recommendedPost) {
+        const analysisResult = await yapScoreFromDraft({ draft: recommendedPost.content });
+        setYapResult(analysisResult);
+      }
+
     } catch (error) {
       console.error(error);
       toast({
@@ -79,7 +106,7 @@ export function InfoFiContentClient() {
             ) : (
               <Sparkles />
             )}
-            <span className="ml-2">Generate Posts</span>
+            <span className="ml-2">Generate & Analyze</span>
           </Button>
         </CardContent>
       </Card>
@@ -152,11 +179,11 @@ export function InfoFiContentClient() {
                 
                  <Card>
                     <CardHeader>
-                        <CardTitle>🎯 Recommendation</CardTitle>
+                        <CardTitle>🎯 Recommendation & Strategy</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4 text-sm">
                         <div>
-                            <h4 className="font-semibold">Best Version</h4>
+                            <h4 className="font-semibold">Best Version to Use</h4>
                             <p className="text-muted-foreground">{result.recommendation.bestVersion}</p>
                         </div>
                          <div>
@@ -169,6 +196,71 @@ export function InfoFiContentClient() {
                         </div>
                     </CardContent>
                 </Card>
+
+                {yapResult && (
+                  <Card className="bg-card/50">
+                    <CardHeader>
+                      <CardTitle>📊 Yap Optimizer Analysis</CardTitle>
+                      <CardDescription>Analysis of the recommended post variation.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <TooltipProvider>
+                      <div className="flex w-full flex-col items-center text-center">
+                          <div className="flex items-center gap-8">
+                              <div className="flex flex-col items-center">
+                                  <p className="text-sm font-medium text-muted-foreground">Predicted Yap Score</p>
+                                  <YapScoreGauge score={yapResult.yapScore} />
+                              </div>
+                              <div className="flex flex-col items-center">
+                                  <div className="flex items-center gap-1">
+                                      <p className="text-sm font-medium text-muted-foreground">Tweepcred Score</p>
+                                      <Tooltip>
+                                          <TooltipTrigger>
+                                              <HelpCircle className="h-4 w-4 text-muted-foreground" />
+                                          </TooltipTrigger>
+                                          <TooltipContent>
+                                              <p className="max-w-xs">Tweepcred is your X reputation score. A higher score improves reach.</p>
+                                          </TooltipContent>
+                                      </Tooltip>
+                                  </div>
+                                  <YapScoreGauge score={yapResult.tweepcredScore} />
+                              </div>
+                          </div>
+
+                          <div className="mt-4 grid w-full gap-4 text-center sm:grid-cols-2">
+                              <div>
+                                  <p className="text-sm text-muted-foreground mb-2">Sentiment</p>
+                                  <Badge variant={getSentimentBadgeVariant(yapResult.sentiment)} className="capitalize">{yapResult.sentiment}</Badge>
+                              </div>
+                              <div>
+                                  <p className="text-sm text-muted-foreground mb-2">Keywords</p>
+                                  <div className="flex flex-wrap gap-2 justify-center">
+                                  {yapResult.keywords.length > 0 ? yapResult.keywords.map(kw => <Badge key={kw} variant="outline">{kw}</Badge>) : <span className="text-sm text-muted-foreground">None</span>}
+                                  </div>
+                              </div>
+                          </div>
+
+                          <Separator className="my-6" />
+
+                          <div className="grid w-full gap-6 text-left md:grid-cols-2">
+                              <div>
+                                  <h4 className="font-semibold mb-2 flex items-center gap-2"><BotMessageSquare className="h-4 w-4" /> Yap Suggestions:</h4>
+                                  <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                                      {yapResult.suggestions.map((suggestion, index) => <li key={index}>{suggestion}</li>)}
+                                  </ul>
+                              </div>
+                              <div>
+                                  <h4 className="font-semibold mb-2 flex items-center gap-2"><ShieldCheck className="h-4 w-4" /> Tweepcred Suggestions:</h4>
+                                  <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                                      {yapResult.tweepcredSuggestions.map((suggestion, index) => <li key={index}>{suggestion}</li>)}
+                                  </ul>
+                              </div>
+                          </div>
+                      </div>
+                      </TooltipProvider>
+                    </CardContent>
+                  </Card>
+                )}
             </>
         )}
       </div>
