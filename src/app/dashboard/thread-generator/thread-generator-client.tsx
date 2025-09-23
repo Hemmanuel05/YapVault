@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Wand2, Copy, Check, MessageSquareQuote } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export function ThreadGeneratorClient() {
   const [sourceMaterial, setSourceMaterial] = useState('');
@@ -134,33 +135,39 @@ export function ThreadGeneratorClient() {
 
         {result && (
           <div className="space-y-4">
-            <Card>
+            <Card className="animate-in fade-in-0 slide-in-from-bottom-5 duration-500">
                 <CardHeader>
                     <CardTitle>Generated Thread</CardTitle>
                     <CardDescription>Copy each post below and publish them on X in order.</CardDescription>
                 </CardHeader>
             </Card>
             {result.thread.map((post, index) => (
-              <Card key={index}>
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-1 space-y-2">
-                        <p className="whitespace-pre-wrap font-mono text-sm">{post}</p>
+              <div
+                key={index}
+                className={cn("animate-in fade-in-0 slide-in-from-bottom-5 duration-500")}
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-1 space-y-2">
+                          <p className="whitespace-pre-wrap font-mono text-sm">{post}</p>
+                      </div>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleCopy(post, index)}
+                      >
+                        {copiedStates[index] ? (
+                          <Check className="text-primary" />
+                        ) : (
+                          <Copy />
+                        )}
+                      </Button>
                     </div>
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => handleCopy(post, index)}
-                    >
-                      {copiedStates[index] ? (
-                        <Check className="text-primary" />
-                      ) : (
-                        <Copy />
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             ))}
           </div>
         )}
