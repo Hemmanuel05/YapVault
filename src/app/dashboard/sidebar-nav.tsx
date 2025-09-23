@@ -9,6 +9,7 @@ import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircl
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
+import { useAuth } from '@/hooks/use-auth';
 
 const navItems = [
   {
@@ -54,11 +55,15 @@ const adminNavItems = [
         href: '/dashboard/admin',
         label: 'Admin',
         icon: <Shield />,
+        // In a production app, this would be stored in a secure database
+        // and not hardcoded.
+        adminEmails: ['ikezahuemma@gmail.com'],
     }
 ]
 
 export function SidebarNav() {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   return (
     <SidebarMenu>
@@ -76,19 +81,24 @@ export function SidebarNav() {
         </SidebarMenuItem>
       ))}
       <Separator className="my-2" />
-      {adminNavItems.map((item) => (
-        <SidebarMenuItem key={item.href}>
-          <Link href={item.href}>
-            <SidebarMenuButton
-              isActive={item.exact ? pathname === item.href : pathname.startsWith(item.href)}
-              tooltip={{ children: item.label, className: 'bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border' }}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </SidebarMenuButton>
-          </Link>
-        </SidebarMenuItem>
-      ))}
+      {adminNavItems.map((item) => {
+        const isAuthorized = user && item.adminEmails.includes(user.email || '');
+        if (!isAuthorized) return null;
+        
+        return (
+            <SidebarMenuItem key={item.href}>
+            <Link href={item.href}>
+                <SidebarMenuButton
+                isActive={item.exact ? pathname === item.href : pathname.startsWith(item.href)}
+                tooltip={{ children: item.label, className: 'bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border' }}
+                >
+                {item.icon}
+                <span>{item.label}</span>
+                </SidebarMenuButton>
+            </Link>
+            </SidebarMenuItem>
+        );
+       })}
     </SidebarMenu>
   );
 }

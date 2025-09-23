@@ -28,8 +28,14 @@ import {
   MessageCircleQuestion,
   SearchCheck,
   ShieldQuestion,
+  ShieldAlert,
 } from 'lucide-react';
 import { ActivityLogEntry } from '@/hooks/use-activity-log';
+import { useAuth } from '@/hooks/use-auth';
+
+// In a production app, this would be stored in a secure database
+// and not hardcoded.
+const ADMIN_USERS = ['ikezahuemma@gmail.com']; 
 
 const featureMap: {
   [key: string]: { icon: React.ReactNode; color: string };
@@ -64,8 +70,55 @@ const featureMap: {
   }
 };
 
+function AccessDenied() {
+    return (
+        <div className="flex flex-col items-center justify-center h-full text-center py-16">
+            <ShieldAlert className="h-16 w-16 text-destructive" />
+            <h2 className="mt-4 text-2xl font-bold">Access Denied</h2>
+            <p className="mt-2 text-muted-foreground">You do not have permission to view this page.</p>
+        </div>
+    );
+}
+
 export default function AdminPage() {
   const { activityLog } = useActivityLog();
+  const { user, isLoading } = useAuth();
+  
+  const isAuthorized = user && ADMIN_USERS.includes(user.email || '');
+
+  if (isLoading) {
+    return (
+        <div className="space-y-8">
+            <PageHeader
+                title="Admin Dashboard"
+                description="Monitor user activity across the platform in real-time."
+            />
+            <Card>
+                <CardHeader>
+                    <CardTitle>Real-Time User Activity</CardTitle>
+                    <CardDescription>
+                       Loading and verifying permissions...
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-96 w-full animate-pulse bg-muted rounded-lg" />
+                </CardContent>
+            </Card>
+        </div>
+    )
+  }
+
+  if (!isAuthorized) {
+    return (
+        <div className="space-y-8">
+            <PageHeader
+                title="Admin Dashboard"
+                description="Monitor user activity across the platform in real-time."
+            />
+            <AccessDenied />
+        </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
