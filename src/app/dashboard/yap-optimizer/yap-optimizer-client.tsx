@@ -106,6 +106,7 @@ export function YapOptimizerClient() {
   const { toast } = useToast();
   const [persona, setPersona] = useState<string>('default');
   const [customPersona, setCustomPersona] = useState('');
+  const [model, setModel] = useState<string>('google');
   const { addActivity } = useActivityLog();
 
   const handleAnalyze = async () => {
@@ -236,20 +237,34 @@ export function YapOptimizerClient() {
                   <span className="ml-2">Fix Tweet</span>
                 </Button>
             </div>
-            <div className="space-y-2">
-                <Label>Rewrite Persona</Label>
-                <Select value={persona} onValueChange={setPersona}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Persona" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Default</SelectItem>
-                    <SelectItem value="The Wale">The Wale</SelectItem>
-                    <SelectItem value="The Bandit">The Bandit</SelectItem>
-                    <SelectItem value="The R2D2">The R2D2</SelectItem>
-                    <SelectItem value="custom">Custom Persona</SelectItem>
-                  </SelectContent>
-                </Select>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                  <Label>Rewrite Persona</Label>
+                  <Select value={persona} onValueChange={setPersona}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Persona" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Default</SelectItem>
+                      <SelectItem value="The Wale">The Wale</SelectItem>
+                      <SelectItem value="The Bandit">The Bandit</SelectItem>
+                      <SelectItem value="The R2D2">The R2D2</SelectItem>
+                      <SelectItem value="custom">Custom Persona</SelectItem>
+                    </SelectContent>
+                  </Select>
+              </div>
+               <div className="space-y-2">
+                  <Label>Model</Label>
+                  <Select value={model} onValueChange={setModel}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Model" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="google">Google (Default)</SelectItem>
+                      <SelectItem value="groq" disabled>Groq (Coming Soon)</SelectItem>
+                    </SelectContent>
+                  </Select>
+              </div>
             </div>
 
             {persona === 'custom' && (
