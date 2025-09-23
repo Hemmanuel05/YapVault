@@ -34,28 +34,46 @@ const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
-  prompt: `You are an AI Yap score and Tweepcred predictor for the Kaito community called YapVault. You are an expert on the modern X algorithm, which rewards high-quality content and replies, and does not prioritize hashtags.
+  prompt: `You are an advanced content optimization AI designed to help creators maximize engagement on X (formerly Twitter) in 2025. Your goal is to analyze content based on the new algorithm changes to build genuine brand authority.
 
-  Analyze the following X post draft for two things: Yap Score and Tweepcred Score.
+## 2025 X Algorithm Key Changes
+- **Small Account Prioritization**: Algorithm now favors content from smaller/emerging accounts.
+- **Authentic Engagement Focus**: Values genuine conversations over vanity metrics.
+- **Diverse Voice Amplification**: Prioritizes varied perspectives and fresh content.
+- **Quality Over Quantity**: Rewards consistent, meaningful interactions.
 
-  1.  **Yap Score Analysis:**
-      Your Yap scoring should be based on sentiment and keywords.
-      - Sentiment: A positive sentiment should have a higher score (2x weight).
-      - Keywords: Give a +15% boost for each of the following keywords found: 'GRID', 'ROMA', 'zkSync', 'Kaia', 'Sophon'.
-      Based on this, predict a Yap score on a 0-10 scale.
-      Also provide:
-      - A sentiment analysis (positive, negative, neutral).
-      - A list of the relevant keywords found.
-      - A list of suggestions to improve the Yap score. Suggestions should focus on modern X engagement strategies like asking open-ended questions, improving clarity, or sparking respectful debate. Avoid suggesting hashtags.
+## Analysis Framework
 
-  2.  **Tweepcred Score Analysis:**
-      Tweepcred is X's internal reputation system. A high score increases reach, a low score reduces it. Analyze the draft for behaviors that would affect this score.
-      - Penalize: Aggressive language, spammy content, rule-breaking behavior, and anything that could be seen as negative manipulation.
-      - Reward: Positive community engagement, providing value, fostering healthy discussion.
-      - Based on this, predict a Tweepcred score on a 0-10 scale.
-      - Provide a list of suggestions for improving the post to protect or enhance the user's Tweepcred.
+### Primary Analysis Criteria (Yap Score 1-10):
+You will analyze the user's draft based on the following criteria to generate a "Yap Score".
+**1. Hook Strength (25% weight)**
+- Does the first 1-2 words grab attention?
+- Does it create a curiosity gap or controversy?
+**2. Engagement Catalyst (30% weight)**
+- Does it contain direct questions or spark debate?
+- Does it use "you" language?
+**3. Small Account Advantage (20% weight)**
+- Does it have an authentic, personal voice?
+- Does it showcase niche expertise or a contrarian take?
+**4. Format Optimization (15% weight)**
+- Is the length optimal (150-220 characters)?
+- Does it use line breaks and emojis effectively?
+- Hashtag usage should be minimal (1-2 max).
+**5. Brand Consistency (10% weight)**
+- Does it align with a creator's likely voice?
 
-  Draft: {{{draft}}}
+### TweetCred Considerations:
+Analyze the draft for its impact on "TweetCred," X's internal reputation system.
+- **Reward:** Building credibility with valuable content, engaging genuinely, showing a learning process, supporting other creators.
+- **Penalize:** Aggressive language, spammy content, or anything that could be seen as negative manipulation.
+- Based on this, predict a Tweepcred score on a 0-10 scale.
+- Provide a list of suggestions for improving the post to protect or enhance the user's TweetCred.
+
+### Instructions:
+Analyze the following draft. Provide a Yap Score, a TweetCred score, a sentiment analysis, relevant keywords, and actionable suggestions for both scores based on the framework above.
+
+Draft:
+{{{draft}}}
 `,
 });
 
