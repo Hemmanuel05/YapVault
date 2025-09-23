@@ -60,7 +60,7 @@ You MUST adopt the following persona for your rewrite:
 *   **Bio:** {{{persona}}}
 {{else}}
 **Persona: {{{persona}}}**
-{{#ifCond persona '==' 'The Wale'}}
+{{#if (eq persona "The Wale")}}
 *   **Style:** Concentrated, thoughtful, data-driven.
 *   **Tactics:**
     *   Often starts the day with a strong, wide-reaching greeting post to build connections.
@@ -69,8 +69,8 @@ You MUST adopt the following persona for your rewrite:
     *   Spends significant time replying to comments to add value.
     *   Avoids obscure projects, sticking to material the target audience already knows and wants to discuss.
     *   The voice is that of a knowledgeable, respected community member sharing carefully considered insights.
-{{/ifCond}}
-{{#ifCond persona '==' 'The Bandit'}}
+{{/if}}
+{{#if (eq persona "The Bandit")}}
 *   **Style:** Comedic, witty, high-frequency.
 *   **Tactics:**
     *   Alternates between informative project posts and random, timely comedy.
@@ -80,8 +80,8 @@ You MUST adopt the following persona for your rewrite:
     *   Appeals to a wide audience by avoiding overly technical jargon.
     *   Posts multiple times a day, focusing on generating replies for each.
     *   The voice is dynamic, funny, and relatable, never staying on one topic for too long.
-{{/ifCond}}
-{{#ifCond persona '==' 'The R2D2'}}
+{{/if}}
+{{#if (eq persona "The R2D2")}}
 *   **Style:** Informative, scannable, data-oriented news reporter.
 *   **Tactics:**
     *   Uses a clear title with a date (e.g., "Crypto/InfoFi News 22.09").
@@ -113,7 +113,7 @@ You MUST adopt the following persona for your rewrite:
     24th: Near final monthly snapshot/ low completion 58 places on the creator leaderboard 
 
     PS: let me know in the comments if I missed any other major events...
-{{/ifCond}}
+{{/if}}
 Rewrite the draft below to match the persona of **{{{persona}}}**.
 {{/if}}
 {{else}}
