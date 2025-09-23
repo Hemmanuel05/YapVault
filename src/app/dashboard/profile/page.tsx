@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,19 +13,30 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 
 export default function ProfilePage() {
-  const userAvatar = PlaceHolderImages.find((img) => img.id === 'avatar1');
-  const [username, setUsername] = useState('heisninja');
-  const [email, setEmail] = useState('ikezahuemma@gmail.com');
-  const [avatar, setAvatar] = useState(userAvatar?.imageUrl || '');
+  const { user, isLoading } = useAuth();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [avatar, setAvatar] = useState('');
+  const [avatarFallback, setAvatarFallback] = useState('');
   const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (user) {
+      setEmail(user.email || '');
+      const emailUsername = user.email?.split('@')[0] || '';
+      setUsername(user.displayName || emailUsername);
+      setAvatar(user.photoURL || '');
+      setAvatarFallback((user.displayName || emailUsername).charAt(0).toUpperCase());
+    }
+  }, [user]);
+  
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -48,12 +59,54 @@ export default function ProfilePage() {
         title: 'Profile Updated',
         description: 'Your changes have been saved successfully.',
       });
-      // Here you would typically handle the file upload
+      // Here you would typically handle the file upload and update user profile
       if (newAvatarFile) {
         console.log('Uploading new avatar:', newAvatarFile.name);
       }
+      if (user) {
+        // Example of updating user profile would go here
+        // updateProfile(user, { displayName: username, photoURL: newAvatarUrl });
+      }
     }, 1500);
   };
+  
+  if (isLoading) {
+    return (
+        <div className="space-y-8">
+            <PageHeader
+                title="Profile Settings"
+                description="Manage your account details and preferences."
+            />
+            <Card>
+                <CardHeader>
+                    <CardTitle>Edit Profile</CardTitle>
+                    <CardDescription>
+                        Loading your profile information...
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                            <Skeleton className="h-20 w-20 rounded-full" />
+                            <Skeleton className="h-10 w-xs" />
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                             <div className="space-y-2">
+                                <Skeleton className="h-4 w-1/4" />
+                                <Skeleton className="h-10 w-full" />
+                            </div>
+                            <div className="space-y-2">
+                                <Skeleton className="h-4 w-1/4" />
+                                <Skeleton className="h-10 w-full" />
+                            </div>
+                        </div>
+                        <Skeleton className="h-10 w-32" />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -75,7 +128,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-4">
                 <Avatar className="h-20 w-20">
                   <AvatarImage src={avatar} alt="User avatar" data-ai-hint="person portrait" />
-                  <AvatarFallback>IZ</AvatarFallback>
+                  <AvatarFallback>{avatarFallback}</AvatarFallback>
                 </Avatar>
                 <Input
                   id="picture"
@@ -103,14 +156,14 @@ export default function ProfilePage() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-background"
+                  readOnly
+                  className="bg-background cursor-not-allowed text-muted-foreground"
                 />
               </div>
             </div>
             <Button type="submit" disabled={isSaving}>
-              {isSaving && <Loader2 className="animate-spin" />}
-              {!isSaving && 'Save Changes'}
+              {isSaving ? <Loader2 className="animate-spin mr-2" /> : null}
+              {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </form>
         </CardContent>
