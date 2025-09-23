@@ -10,6 +10,7 @@ import { Loader2, Wand2, Copy, Check, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
+import { useActivityLog } from '@/hooks/use-activity-log';
 
 export function ContentIdeasClient() {
   const [topic, setTopic] = useState('');
@@ -18,6 +19,7 @@ export function ContentIdeasClient() {
   const [copiedStates, setCopiedStates] = useState<boolean[]>([]);
   const { toast } = useToast();
   const [selectedIdea, setSelectedIdea] = useState<string | null>(null);
+  const { addActivity } = useActivityLog();
 
   const handleGenerate = async () => {
     if (!topic.trim()) {
@@ -37,6 +39,11 @@ export function ContentIdeasClient() {
       const ideasResult = await generateContentIdeas({ topic });
       setResult(ideasResult);
       setCopiedStates(new Array(ideasResult.ideas.length).fill(false));
+      addActivity({
+        feature: 'Content Ideas',
+        action: 'Generated Ideas',
+        details: `Brainstormed ideas for the topic: "${topic}"`,
+      });
     } catch (error)      {
       console.error(error);
       toast({

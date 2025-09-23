@@ -1,3 +1,6 @@
+'use client';
+
+import { useActivityLog } from '@/hooks/use-activity-log';
 import { PageHeader } from '@/components/page-header';
 import {
   Table,
@@ -24,118 +27,58 @@ import {
   Lightbulb,
   MessageCircleQuestion,
   SearchCheck,
-  User,
+  ShieldQuestion,
 } from 'lucide-react';
+import { ActivityLogEntry } from '@/hooks/use-activity-log';
 
-const activityLog = [
-  {
-    user: {
-      name: 'Ike Zahuemma',
-      handle: '@heisninja',
-      avatarId: 'avatar1',
-    },
-    action: 'Generated Persona',
-    feature: 'Yap Optimizer',
-    timestamp: '2024-09-25T10:30:00Z',
-    details: 'Generated a new custom persona from 4 posts.',
-    icon: <User />,
+const featureMap: {
+  [key: string]: { icon: React.ReactNode; color: string };
+} = {
+  'Yap Optimizer': {
+    icon: <BotMessageSquare className="h-4 w-4" />,
+    color: 'bg-blue-500/20 text-blue-400',
   },
-  {
-    user: {
-      name: 'Wals.eth',
-      handle: '@wals_eth',
-      avatarId: 'avatar2',
-    },
-    action: 'Analyzed Post',
-    feature: 'Post-Mortem Analyzer',
-    timestamp: '2024-09-25T10:28:00Z',
-    details: 'Analyzed a post about crypto CPMs.',
-    icon: <SearchCheck />,
+  'InfoFi Content': {
+    icon: <Sparkles className="h-4 w-4" />,
+    color: 'bg-purple-500/20 text-purple-400',
   },
-  {
-    user: {
-      name: 'Ike Zahuemma',
-      handle: '@heisninja',
-      avatarId: 'avatar1',
-    },
-    action: 'Generated Reply',
-    feature: 'Authentic Reply',
-    timestamp: '2024-09-25T10:25:00Z',
-    details: 'Replied to a post about Anichess.',
-    icon: <MessageCircleQuestion />,
+  'Thread Generator': {
+    icon: <MessageSquareQuote className="h-4 w-4" />,
+    color: 'bg-green-500/20 text-green-400',
   },
-  {
-    user: {
-      name: 'CryptoGamer',
-      handle: '@gamer123',
-      avatarId: 'avatar3',
-    },
-    action: 'Generated Thread',
-    feature: 'Thread Generator',
-    timestamp: '2024-09-25T10:15:00Z',
-    details: 'Generated a 5-post thread on "Play-to-Earn economies".',
-    icon: <MessageSquareQuote />,
+  'Content Ideas': {
+    icon: <Lightbulb className="h-4 w-4" />,
+    color: 'bg-yellow-500/20 text-yellow-400',
   },
-  {
-    user: {
-      name: 'DeFi Degen',
-      handle: '@degen_dave',
-      avatarId: 'avatar4',
-    },
-    action: 'Generated Ideas',
-    feature: 'Content Ideas',
-    timestamp: '2024-09-25T10:05:00Z',
-    details: 'Brainstormed ideas for the topic "liquid restaking".',
-    icon: <Lightbulb />,
+  'Authentic Reply': {
+    icon: <MessageCircleQuestion className="h-4 w-4" />,
+    color: 'bg-cyan-500/20 text-cyan-400',
   },
-  {
-    user: {
-      name: 'Wals.eth',
-      handle: '@wals_eth',
-      avatarId: 'avatar2',
-    },
-    action: 'Generated InfoFi Post',
-    feature: 'InfoFi Content',
-    timestamp: '2024-09-25-T09:50:00Z',
-    details: 'Generated content about $PUMP token analysis.',
-    icon: <Sparkles />,
+  'Post-Mortem Analyzer': {
+    icon: <SearchCheck className="h-4 w-4" />,
+    color: 'bg-orange-500/20 text-orange-400',
   },
-  {
-    user: {
-      name: 'NFT Nick',
-      handle: '@nick_nfts',
-      avatarId: 'avatar5',
-    },
-action: 'Analyzed Draft',
-    feature: 'Yap Optimizer',
-    timestamp: '2024-09-25T09:45:00Z',
-    details: 'Predicted Yap score for a draft about a new NFT drop.',
-    icon: <BotMessageSquare />,
-  },
-];
-
-const featureMap: { [key: string]: { icon: React.ReactNode, color: string } } = {
-    "Yap Optimizer": { icon: <BotMessageSquare className="h-4 w-4" />, color: 'bg-blue-500/20 text-blue-400' },
-    "InfoFi Content": { icon: <Sparkles className="h-4 w-4" />, color: 'bg-purple-500/20 text-purple-400' },
-    "Thread Generator": { icon: <MessageSquareQuote className="h-4 w-4" />, color: 'bg-green-500/20 text-green-400' },
-    "Content Ideas": { icon: <Lightbulb className="h-4 w-4" />, color: 'bg-yellow-500/20 text-yellow-400' },
-    "Authentic Reply": { icon: <MessageCircleQuestion className="h-4 w-4" />, color: 'bg-cyan-500/20 text-cyan-400' },
-    "Post-Mortem Analyzer": { icon: <SearchCheck className="h-4 w-4" />, color: 'bg-orange-500/20 text-orange-400' },
+  'Persona Generator': {
+    icon: <ShieldQuestion className="h-4 w-4" />,
+    color: 'bg-pink-500/20 text-pink-400',
+  }
 };
 
-
 export default function AdminPage() {
+  const { activityLog } = useActivityLog();
+  const sortedLog = [...activityLog].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
   return (
     <div className="space-y-8">
       <PageHeader
         title="Admin Dashboard"
-        description="Monitor user activity across the platform."
+        description="Monitor user activity across the platform. (Logs are reset on page refresh)"
       />
       <Card>
         <CardHeader>
           <CardTitle>Recent User Activity</CardTitle>
           <CardDescription>
-            A log of the most recent actions taken by users.
+            A log of the most recent actions taken by users in this session.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -150,46 +93,62 @@ export default function AdminPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {activityLog.map((log, index) => {
-                const userAvatar = PlaceHolderImages.find(
-                  (img) => img.id === log.user.avatarId
-                );
-                const featureInfo = featureMap[log.feature];
+              {sortedLog.length === 0 ? (
+                 <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center">
+                        No activity recorded yet. Go use a feature!
+                    </TableCell>
+                 </TableRow>
+              ) : (
+                sortedLog.map((log: ActivityLogEntry, index: number) => {
+                  const userAvatar = PlaceHolderImages.find(
+                    (img) => img.id === log.user.avatarId
+                  );
+                  const featureInfo = featureMap[log.feature];
 
-                return (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={userAvatar?.imageUrl} />
-                          <AvatarFallback>
-                            {log.user.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium">{log.user.name}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {log.user.handle}
-                          </p>
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={userAvatar?.imageUrl} />
+                            <AvatarFallback>
+                              {log.user.name.charAt(0)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium">{log.user.name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {log.user.handle}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                        <Badge variant="outline" className={`gap-2 ${featureInfo?.color}`}>
-                            {featureInfo?.icon}
+                      </TableCell>
+                      <TableCell>
+                        {featureInfo ? (
+                           <Badge
+                            variant="outline"
+                            className={`gap-2 ${featureInfo.color}`}
+                          >
+                            {featureInfo.icon}
                             {log.feature}
-                        </Badge>
-                    </TableCell>
-                    <TableCell>{log.action}</TableCell>
-                    <TableCell className="text-muted-foreground max-w-xs truncate">
-                      {log.details}
-                    </TableCell>
-                    <TableCell className="text-right text-muted-foreground text-xs">
-                      {new Date(log.timestamp).toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                          </Badge>
+                        ) : (
+                            <Badge variant="secondary">{log.feature}</Badge>
+                        )}
+                       
+                      </TableCell>
+                      <TableCell>{log.action}</TableCell>
+                      <TableCell className="max-w-xs truncate text-muted-foreground">
+                        {log.details}
+                      </TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">
+                        {new Date(log.timestamp).toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </CardContent>

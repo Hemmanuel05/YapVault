@@ -6,15 +6,17 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, SearchCheck, ThumbsUp, Lightbulb, TrendingUp, XCircle } from 'lucide-react';
+import { Loader2, SearchCheck, ThumbsUp, Lightbulb, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
+import { useActivityLog } from '@/hooks/use-activity-log';
 
 export function PostMortemClient() {
   const [postText, setPostText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<AnalyzePublishedPostOutput | null>(null);
   const { toast } = useToast();
+  const { addActivity } = useActivityLog();
 
   const handleAnalyze = async () => {
     if (!postText.trim()) {
@@ -32,6 +34,11 @@ export function PostMortemClient() {
     try {
       const analysisResult = await analyzePublishedPost({ postText });
       setResult(analysisResult);
+      addActivity({
+        feature: 'Post-Mortem Analyzer',
+        action: 'Analyzed Post',
+        details: `Analyzed post: "${postText.substring(0, 40)}..."`,
+      });
     } catch (error) {
       console.error(error);
       toast({

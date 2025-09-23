@@ -14,6 +14,7 @@ import { YapScoreGauge } from '@/components/yap-score-gauge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
+import { useActivityLog } from '@/hooks/use-activity-log';
 
 export function InfoFiContentClient() {
   const [sourceMaterial, setSourceMaterial] = useState('');
@@ -22,6 +23,7 @@ export function InfoFiContentClient() {
   const [yapResult, setYapResult] = useState<YapScoreFromDraftOutput | null>(null);
   const { toast } = useToast();
   const [copiedStates, setCopiedStates] = useState<boolean[]>([]);
+  const { addActivity } = useActivityLog();
 
   const getSentimentBadgeVariant = (sentiment: string) => {
     switch (sentiment.toLowerCase()) {
@@ -52,6 +54,11 @@ export function InfoFiContentClient() {
       const generationResult = await generateInfoFiPost({ sourceMaterial });
       setResult(generationResult);
       setCopiedStates(new Array(generationResult.optimizedPosts.length).fill(false));
+      addActivity({
+        feature: 'InfoFi Content',
+        action: 'Generated Content',
+        details: `Generated content from source: "${sourceMaterial.substring(0, 40)}..."`,
+      });
 
       // Now, analyze the recommended post
       const recommendedPostVersion = generationResult.recommendation.bestVersion.split(' ')[0].replace(':', '');

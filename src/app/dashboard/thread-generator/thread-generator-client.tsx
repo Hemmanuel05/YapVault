@@ -16,6 +16,7 @@ import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Wand2, Copy, Check, MessageSquareQuote } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useActivityLog } from '@/hooks/use-activity-log';
 
 export function ThreadGeneratorClient() {
   const [sourceMaterial, setSourceMaterial] = useState('');
@@ -24,6 +25,7 @@ export function ThreadGeneratorClient() {
   const [result, setResult] = useState<GenerateThreadOutput | null>(null);
   const [copiedStates, setCopiedStates] = useState<boolean[]>([]);
   const { toast } = useToast();
+  const { addActivity } = useActivityLog();
 
   const handleGenerate = async () => {
     if (!sourceMaterial.trim()) {
@@ -42,6 +44,11 @@ export function ThreadGeneratorClient() {
       const threadResult = await generateThread({ sourceMaterial, numPosts });
       setResult(threadResult);
       setCopiedStates(new Array(threadResult.thread.length).fill(false));
+      addActivity({
+        feature: 'Thread Generator',
+        action: 'Generated Thread',
+        details: `Generated a ${numPosts}-post thread on: "${sourceMaterial.substring(0, 30)}..."`,
+      });
     } catch (error) {
       console.error(error);
       toast({

@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
+import { useActivityLog } from '@/hooks/use-activity-log';
 
 export function ReplyGeneratorClient() {
   const [originalPost, setOriginalPost] = useState('');
@@ -20,6 +21,7 @@ export function ReplyGeneratorClient() {
   const { toast } = useToast();
   const [image, setImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const { addActivity } = useActivityLog();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -49,6 +51,11 @@ export function ReplyGeneratorClient() {
     try {
       const replyResult = await generateAuthenticReply({ originalPost, photoDataUri: image || undefined });
       setResult(replyResult);
+      addActivity({
+        feature: 'Authentic Reply',
+        action: 'Generated Reply',
+        details: `Replied to post: "${originalPost.substring(0, 40)}..."`,
+      });
     } catch (error) {
       console.error(error);
       toast({

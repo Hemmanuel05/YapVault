@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { BotMessageSquare, Loader2, Wand2, ShieldCheck, HelpCircle, User, Sparkles } from 'lucide-react';
+import { BotMessageSquare, Loader2, Wand2, ShieldCheck, HelpCircle, Sparkles } from 'lucide-react';
 import { YapScoreGauge } from '@/components/yap-score-gauge';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -17,11 +17,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { useActivityLog } from '@/hooks/use-activity-log';
 
 function GeneratePersonaDialog({ onPersonaGenerated, children }: { onPersonaGenerated: (persona: string) => void, children: React.ReactNode }) {
   const [posts, setPosts] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
+  const { addActivity } = useActivityLog();
 
   const handleGenerate = async () => {
     const postArray = posts.split('\n').map(p => p.trim()).filter(p => p.length > 0);
@@ -38,6 +40,11 @@ function GeneratePersonaDialog({ onPersonaGenerated, children }: { onPersonaGene
     try {
       const { persona } = await generatePersonaFromPosts({ posts: postArray });
       onPersonaGenerated(persona);
+      addActivity({
+        feature: 'Persona Generator',
+        action: 'Generated Persona',
+        details: `Generated a custom persona from ${postArray.length} posts.`,
+      });
       toast({
         title: 'Persona Generated!',
         description: 'The custom persona has been populated for you.',
@@ -86,8 +93,7 @@ function GeneratePersonaDialog({ onPersonaGenerated, children }: { onPersonaGene
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
-  )
+    )
 }
 
 export function YapOptimizerClient() {
@@ -98,6 +104,7 @@ export function YapOptimizerClient() {
   const { toast } = useToast();
   const [persona, setPersona] = useState<string>('default');
   const [customPersona, setCustomPersona] = useState('');
+  const { addActivity } = useActivityLog();
 
   const handleAnalyze = async () => {
     if (!draft.trim()) {
@@ -115,6 +122,11 @@ export function YapOptimizerClient() {
     try {
       const analysisResult = await yapScoreFromDraft({ draft });
       setResult(analysisResult);
+      addActivity({
+        feature: 'Yap Optimizer',
+        action: 'Analyzed Draft',
+        details: `Predicted Yap score for draft: "${draft.substring(0, 40)}..."`,
+      });
     } catch (error) {
       console.error(error);
       toast({
@@ -158,6 +170,11 @@ export function YapOptimizerClient() {
       });
 
       setDraft(improvedDraft);
+      addActivity({
+        feature: 'Yap Optimizer',
+        action: 'Improved Draft',
+        details: `Rewrote draft using ${isCustomPersona ? 'a custom' : persona} persona.`,
+      });
       // Clear previous results as the draft has changed
       setResult(null);
     } catch (error) {
