@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -106,7 +107,7 @@ const generateInfoFiPostFlow = ai.defineFlow(
     try {
         const { output } = await prompt(input);
         if (!output) {
-            throw new Error('Failed to get a response from the AI.');
+            throw new Error('Failed to get a valid response from the AI.');
         }
 
         // Ensure at least 3 variations are returned as requested in the prompt, adding placeholders if necessary.

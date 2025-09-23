@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -121,7 +122,10 @@ const generateImprovedDraftFlow = ai.defineFlow(
   async (input) => {
     try {
         const {output} = await prompt(input);
-        return output!;
+        if (!output) {
+          throw new Error("Failed to get a valid response from the AI.")
+        }
+        return output;
     } catch(e: any) {
         console.error(e);
         const errorMessage = e.message.includes('429') 

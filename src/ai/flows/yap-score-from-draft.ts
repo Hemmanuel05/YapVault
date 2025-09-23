@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -70,7 +71,7 @@ Analyze the draft for its impact on "TweetCred," X's internal reputation system.
   - **Offensive Text**: Any potentially offensive content can lead to an 80% reach reduction.
   - **ALL CAPS TWEET**: Seen as shouting and is heavily penalized.
   - **Including Links**: Penalized. If a link is necessary, consider putting it in a reply to the main post.
-  - **Low Text Quality**: Misspellings and poor grammar are seen as low quality and will be penalized.
+  - **Low Text Quality**: Misspellellings and poor grammar are seen as low quality and will be penalized.
 - Based on this, predict a Tweepcred score on a 0-10 scale.
 - Provide a list of suggestions for improving the post to protect or enhance the user's TweetCred.
 
@@ -89,14 +90,48 @@ const yapScoreFromDraftFlow = ai.defineFlow(
     outputSchema: YapScoreFromDraftOutputSchema,
   },
   async input => {
-    let output: YapScoreFromDraftOutput;
     try {
         const result = await yapScorePrompt(input);
-        output = result.output!;
+        const output = result.output;
 
         if (!output) {
-            throw new Error('Failed to get a response from the AI.');
+            throw new Error('Failed to get a valid response from the AI.');
         }
+
+        let score = output.yapScore;
+
+        // Apply keyword boosts
+        const boostKeywords = ['GRID', 'ROMA', 'zkSync', 'Kaia', 'Sophon'];
+        let keywordBoost = 0;
+        for (const kw of boostKeywords) {
+        if (input.draft.toLowerCase().includes(kw.toLowerCase())) {
+            keywordBoost += 0.15 * 10; // 15% of the max score
+        }
+        }
+        score += keywordBoost;
+
+        // Apply sentiment weight
+        if (output.sentiment.toLowerCase() === 'positive') {
+        score *= 1.2; // Giving a 20% boost for positive sentiment
+        } else if (output.sentiment.toLowerCase() === 'negative') {
+        score *= 0.8;
+        }
+
+        // Clamp score between 0 and 10
+        score = Math.max(0, Math.min(10, score));
+
+        // Add a default suggestion if none are returned
+        if (!output.suggestions || output.suggestions.length === 0) {
+            output.suggestions = ["Try asking an open-ended question to encourage more detailed replies."];
+        }
+        if (!output.tweepcredSuggestions || output.tweepcredSuggestions.length === 0) {
+            output.tweepcredSuggestions = ["This post looks good and follows community guidelines. Keep it up!"];
+        }
+        
+        return {
+            ...output,
+            yapScore: parseFloat(score.toFixed(1)),
+        };
 
     } catch (e: any) {
         console.error(e);
@@ -113,40 +148,5 @@ const yapScoreFromDraftFlow = ai.defineFlow(
             tweepcredSuggestions: ["Analysis could not be completed."],
         }
     }
-    
-    let score = output.yapScore;
-
-    // Apply keyword boosts
-    const boostKeywords = ['GRID', 'ROMA', 'zkSync', 'Kaia', 'Sophon'];
-    let keywordBoost = 0;
-    for (const kw of boostKeywords) {
-      if (input.draft.toLowerCase().includes(kw.toLowerCase())) {
-        keywordBoost += 0.15 * 10; // 15% of the max score
-      }
-    }
-    score += keywordBoost;
-
-    // Apply sentiment weight
-    if (output.sentiment.toLowerCase() === 'positive') {
-      score *= 1.2; // Giving a 20% boost for positive sentiment
-    } else if (output.sentiment.toLowerCase() === 'negative') {
-      score *= 0.8;
-    }
-
-    // Clamp score between 0 and 10
-    score = Math.max(0, Math.min(10, score));
-
-    // Add a default suggestion if none are returned
-    if (!output.suggestions || output.suggestions.length === 0) {
-      output.suggestions = ["Try asking an open-ended question to encourage more detailed replies."];
-    }
-    if (!output.tweepcredSuggestions || output.tweepcredSuggestions.length === 0) {
-        output.tweepcredSuggestions = ["This post looks good and follows community guidelines. Keep it up!"];
-    }
-    
-    return {
-      ...output,
-      yapScore: parseFloat(score.toFixed(1)),
-    };
   }
 );
