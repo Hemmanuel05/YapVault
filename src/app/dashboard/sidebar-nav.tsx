@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare, BarChart, Users } from 'lucide-react';
+import { BotMessageSquare } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -14,16 +14,6 @@ const navItems = [
     href: '/dashboard/yap-optimizer',
     label: 'Yap Optimizer',
     icon: <BotMessageSquare />,
-  },
-  {
-    href: '/dashboard/leaderboard',
-    label: 'Leaderboard',
-    icon: <BarChart />,
-  },
-  {
-    href: '/dashboard/follower-matcher',
-    label: 'Follower Matcher',
-    icon: <Users />,
   },
 ];
 

@@ -26,21 +26,3 @@ export const trendingProjects = [
     { name: 'Initia', description: 'Network for interwoven rollups.' },
     { name: 'Hyperpie', description: 'Decentralized AI infrastructure.' },
 ];
-
-export type Follower = {
-  name: string;
-  handle: string;
-  bio: string;
-  followers: number;
-  avatar: string;
-};
-
-export const followerMatches: Follower[] = [
-    { name: 'CryptoChad', handle: '@ChadCrypto', bio: 'Investor in DeFi, NFTs, and AI. Building the future of Web3.', followers: 15200, avatar: PlaceHolderImages.find(img => img.id === 'avatar1')?.imageUrl || '' },
-    { name: 'Anna_DeFi', handle: '@AnnaDeFi', bio: 'DeFi enthusiast and researcher. Exploring the potential of zkSync and Layer 2 solutions.', followers: 8500, avatar: PlaceHolderImages.find(img => img.id === 'avatar2')?.imageUrl || '' },
-    { name: 'AI_Innovator', handle: '@AI_Innovate', bio: 'AI developer working on decentralized intelligence. Fascinated by GRID and emergent AI.', followers: 5300, avatar: PlaceHolderImages.find(img => img.id === 'avatar3')?.imageUrl || '' },
-    { name: 'Web3Wendy', handle: '@WendyWeb3', bio: 'Community manager for a top Web3 project. Passionate about AI integration in blockchain.', followers: 2100, avatar: PlaceHolderImages.find(img => img.id === 'avatar4')?.imageUrl || '' },
-    { name: 'TokenTitan', handle: '@TokenTitan', bio: 'Early-stage tokenomics advisor. Focused on DeFi protocols and AI-driven trading.', followers: 45000, avatar: PlaceHolderImages.find(img => img.id === 'avatar5')?.imageUrl || '' },
-    { name: 'DAO_Dude', handle: '@DAO_Dude', bio: 'Building DAOs and exploring governance models. Big fan of Sophon\'s approach.', followers: 1200, avatar: PlaceHolderImages.find(img => img.id === 'avatar6')?.imageUrl || '' },
-    { name: 'Layer2Laura', handle: '@L2Laura', bio: 'Technical writer covering all things Layer 2. zkSync, Arbitrum, Optimism. DeFi is the future.', followers: 3400, avatar: PlaceHolderImages.find(img => img.id === 'avatar7')?.imageUrl || '' },
-];

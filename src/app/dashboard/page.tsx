@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowRight, BarChart, BotMessageSquare, Users } from 'lucide-react';
+import { ArrowRight, BotMessageSquare } from 'lucide-react';
 
 const features = [
   {
@@ -16,18 +16,6 @@ const features = [
     description: 'Analyze your X/Twitter drafts to predict Yap scores and optimize for engagement within the Kaito community.',
     href: '/dashboard/yap-optimizer',
     icon: <BotMessageSquare className="mb-4 h-10 w-10 text-accent" />,
-  },
-  {
-    title: 'Leaderboard Tracker',
-    description: 'Monitor the Kaito community leaderboard, track your rank, and get alerts on trending projects.',
-    href: '/dashboard/leaderboard',
-    icon: <BarChart className="mb-4 h-10 w-10 text-accent" />,
-  },
-  {
-    title: 'Smart Follower Matcher',
-    description: 'Find high-value followers from any X handle and generate personalized DM templates to connect.',
-    href: '/dashboard/follower-matcher',
-    icon: <Users className="mb-4 h-10 w-10 text-accent" />,
   },
 ];
 
