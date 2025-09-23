@@ -13,7 +13,7 @@ import {
     type GenerateAuthenticReplyInput
 } from '@/ai/schemas/generate-authentic-reply';
 import { GenerateAuthenticReplyOutput } from '@/ai/schemas/generate-authentic-reply';
-import { googleAI } from '@genkit-ai/googleai';
+import { groq } from '@genkit-ai/groq';
 
 
 export async function generateAuthenticReply(
@@ -24,7 +24,7 @@ export async function generateAuthenticReply(
 
 const prompt = ai.definePrompt({
   name: 'generateAuthenticReplyPrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateAuthenticReplyInputSchema},
   output: {schema: GenerateAuthenticReplyOutputSchema},
   prompt: `# X ALGORITHM-OPTIMIZED REPLY GENERATION PROMPT
@@ -95,10 +95,29 @@ const generateAuthenticReplyFlow = ai.defineFlow(
     outputSchema: GenerateAuthenticReplyOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    if (!output) {
-      throw new Error("Failed to generate a reply.");
+    try {
+        const {output} = await prompt(input);
+        if (!output) {
+        throw new Error("Failed to generate a reply.");
+        }
+        return output;
+    } catch (e: any) {
+        console.error(e);
+        const errorMessage = e.message.includes('429') 
+            ? "The AI service is rate-limited. Please try again shortly."
+            : "An unexpected error occurred. Please check the console.";
+        
+        return {
+            reply: `Error: ${errorMessage}`,
+            evaluation: {
+                humanAuthenticity: 0,
+                engagementPotential: 0,
+                algorithmAppeal: 0,
+                controversyLevel: 0,
+                rudenessLevel: 0,
+                overallQuality: 0,
+            }
+        }
     }
-    return output;
   }
 );

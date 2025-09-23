@@ -13,7 +13,7 @@ import {
     type GenerateInfoFiPostInput
 } from '@/ai/schemas/generate-infofi-post';
 import { GenerateInfoFiPostOutput } from '@/ai/schemas/generate-infofi-post';
-import { googleAI } from '@genkit-ai/googleai';
+import { groq } from '@genkit-ai/groq';
 
 export async function generateInfoFiPost(
   input: GenerateInfoFiPostInput
@@ -23,7 +23,7 @@ export async function generateInfoFiPost(
 
 const prompt = ai.definePrompt({
   name: 'generateInfoFiPostPrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateInfoFiPostInputSchema},
   output: {schema: GenerateInfoFiPostOutputSchema},
   prompt: `# InfoFi Smart Content Generator (Kaito/Yap Points Optimized)
@@ -104,21 +104,42 @@ const generateInfoFiPostFlow = ai.defineFlow(
     outputSchema: GenerateInfoFiPostOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt(input);
-    if (!output) {
-      throw new Error('Failed to get a response from the AI.');
-    }
+    try {
+        const { output } = await prompt(input);
+        if (!output) {
+            throw new Error('Failed to get a response from the AI.');
+        }
 
-    // Ensure at least 3 variations are returned as requested in the prompt, adding placeholders if necessary.
-    while (output.optimizedPosts.length < 3) {
-      output.optimizedPosts.push({
-        version: `Placeholder Focus ${output.optimizedPosts.length + 1}`,
-        content: "Could not generate additional variations. Please try refining your source material.",
-        target: "N/A",
-        yapPotential: "Low",
-      });
-    }
+        // Ensure at least 3 variations are returned as requested in the prompt, adding placeholders if necessary.
+        while (output.optimizedPosts.length < 3) {
+            output.optimizedPosts.push({
+                version: `Placeholder Focus ${output.optimizedPosts.length + 1}`,
+                content: "Could not generate additional variations. Please try refining your source material.",
+                target: "N/A",
+                yapPotential: "Low",
+            });
+        }
 
-    return output;
+        return output;
+    } catch(e: any) {
+        console.error(e);
+        const errorMessage = e.message.includes('429') 
+            ? "The AI service is rate-limited. Please try again shortly."
+            : "An unexpected error occurred. Please check the console.";
+
+        return {
+            analysisSummary: {
+                sourceMaterial: "Error",
+                keyFinding: errorMessage,
+                marketRelevance: "N/A"
+            },
+            optimizedPosts: [],
+            recommendation: {
+                bestVersion: "N/A",
+                timing: "N/A",
+                followUp: "N/A"
+            }
+        };
+    }
   }
 );

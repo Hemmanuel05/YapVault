@@ -13,7 +13,7 @@ import {
     type YapScoreFromDraftInput
 } from '@/ai/schemas/yap-score-from-draft';
 import { YapScoreFromDraftOutput } from '@/ai/schemas/yap-score-from-draft';
-import { googleAI } from '@genkit-ai/googleai';
+import { groq } from '@genkit-ai/groq';
 
 export async function yapScoreFromDraft(input: YapScoreFromDraftInput): Promise<YapScoreFromDraftOutput> {
   return yapScoreFromDraftFlow(input);
@@ -21,7 +21,7 @@ export async function yapScoreFromDraft(input: YapScoreFromDraftInput): Promise<
 
 const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: groq.model('gemma-7b-it'),
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
   prompt: `# X Algorithm Content Optimizer Prompt (2025 Update)
@@ -90,12 +90,31 @@ const yapScoreFromDraftFlow = ai.defineFlow(
     outputSchema: YapScoreFromDraftOutputSchema,
   },
   async input => {
-    const {output} = await yapScorePrompt(input);
+    let output: YapScoreFromDraftOutput;
+    try {
+        const result = await yapScorePrompt(input);
+        output = result.output!;
 
-    if (!output) {
-      throw new Error('Failed to get a response from the AI.');
+        if (!output) {
+            throw new Error('Failed to get a response from the AI.');
+        }
+
+    } catch (e: any) {
+        console.error(e);
+        const suggestion = e.message.includes('429') 
+            ? "The AI service is currently rate-limited. Please try again in a moment."
+            : "An unexpected error occurred while analyzing the draft. Please check the console for details.";
+
+        return {
+            yapScore: 0,
+            sentiment: 'unknown',
+            keywords: [],
+            suggestions: [suggestion],
+            tweepcredScore: 0,
+            tweepcredSuggestions: ["Analysis could not be completed."],
+        }
     }
-
+    
     let score = output.yapScore;
 
     // Apply keyword boosts

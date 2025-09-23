@@ -13,7 +13,7 @@ import {
     type AnalyzePublishedPostInput
 } from '@/ai/schemas/analyze-published-post';
 import { AnalyzePublishedPostOutput } from '@/ai/schemas/analyze-published-post';
-import { googleAI } from '@genkit-ai/googleai';
+import { groq } from '@genkit-ai/groq';
 
 
 export async function analyzePublishedPost(
@@ -24,7 +24,7 @@ export async function analyzePublishedPost(
 
 const prompt = ai.definePrompt({
   name: 'analyzePublishedPostPrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: groq.model('gemma-7b-it'),
   input: {schema: AnalyzePublishedPostInputSchema},
   output: {schema: AnalyzePublishedPostOutputSchema},
   prompt: `You are an expert X/Twitter growth strategist. Your task is to provide a "post-mortem" analysis of a user's published post.
@@ -61,7 +61,25 @@ const analyzePublishedPostFlow = ai.defineFlow(
     outputSchema: AnalyzePublishedPostOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    try {
+        const {output} = await prompt(input);
+        return output!;
+    } catch (e: any) {
+        console.error(e);
+        // A common error is hitting the rate limit. Let's return a more user-friendly error.
+        if (e.message.includes('429')) {
+            return {
+                whatWorked: ["N/A"],
+                couldBeImproved: ["The AI service is currently rate-limited. Please try again in a moment."],
+                missedOpportunityScore: 0,
+            }
+        }
+        // For other errors, return a generic error message.
+        return {
+            whatWorked: ["N/A"],
+            couldBeImproved: ["An unexpected error occurred while analyzing the post. Please check the console for details."],
+            missedOpportunityScore: 0,
+        };
+    }
   }
 );

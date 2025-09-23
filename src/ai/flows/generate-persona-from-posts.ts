@@ -13,7 +13,7 @@ import {
     type GeneratePersonaFromPostsInput,
 } from '@/ai/schemas/generate-persona-from-posts';
 import { GeneratePersonaFromPostsOutput } from '@/ai/schemas/generate-persona-from-posts';
-import { googleAI } from '@genkit-ai/googleai';
+import { groq } from '@genkit-ai/groq';
 
 
 export async function generatePersonaFromPosts(
@@ -24,7 +24,7 @@ export async function generatePersonaFromPosts(
 
 const prompt = ai.definePrompt({
   name: 'generatePersonaFromPostsPrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: groq.model('gemma-7b-it'),
   input: {schema: GeneratePersonaFromPostsInputSchema},
   output: {schema: GeneratePersonaFromPostsOutputSchema},
   prompt: `You are an expert brand strategist and social media analyst. Your task is to analyze a collection of a user's past X/Twitter posts and synthesize a concise, insightful persona description.
@@ -56,7 +56,18 @@ const generatePersonaFromPostsFlow = ai.defineFlow(
     outputSchema: GeneratePersonaFromPostsOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    try {
+        const {output} = await prompt(input);
+        return output!;
+    } catch (e: any) {
+        console.error(e);
+        const errorMessage = e.message.includes('429') 
+            ? "The AI service is rate-limited. Please try again shortly."
+            : "An unexpected error occurred. Please check the console.";
+        
+        return {
+            persona: `Error: ${errorMessage}`
+        }
+    }
   }
 );

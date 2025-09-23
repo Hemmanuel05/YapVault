@@ -13,7 +13,7 @@ import {
     type GenerateContentIdeasInput,
 } from '@/ai/schemas/generate-content-ideas';
 import { GenerateContentIdeasOutput } from '@/ai/schemas/generate-content-ideas';
-import { googleAI } from '@genkit-ai/googleai';
+import { groq } from '@genkit-ai/groq';
 
 export async function generateContentIdeas(
   input: GenerateContentIdeasInput
@@ -23,7 +23,7 @@ export async function generateContentIdeas(
 
 const prompt = ai.definePrompt({
   name: 'generateContentIdeasPrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateContentIdeasInputSchema},
   output: {schema: GenerateContentIdeasOutputSchema},
   prompt: `You are an expert social media strategist specializing in the crypto and AI space. Your task is to brainstorm engaging post ideas and hooks based on a user's topic.
@@ -52,7 +52,23 @@ const generateContentIdeasFlow = ai.defineFlow(
     outputSchema: GenerateContentIdeasOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    try {
+        const {output} = await prompt(input);
+        return output!;
+    } catch (e: any) {
+        console.error(e);
+        const errorMessage = e.message.includes('429') 
+            ? "The AI service is rate-limited. Please try again shortly."
+            : "An unexpected error occurred. Please check the console.";
+
+        return {
+            ideas: [
+                {
+                    title: "Error",
+                    idea: errorMessage,
+                }
+            ]
+        }
+    }
   }
 );

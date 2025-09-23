@@ -13,7 +13,7 @@ import {
     type GenerateThreadInput,
 } from '@/ai/schemas/generate-thread';
 import { GenerateThreadOutput } from '@/ai/schemas/generate-thread';
-import { googleAI } from '@genkit-ai/googleai';
+import { groq } from '@genkit-ai/groq';
 
 export async function generateThread(
   input: GenerateThreadInput
@@ -23,7 +23,7 @@ export async function generateThread(
 
 const prompt = ai.definePrompt({
   name: 'generateThreadPrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateThreadInputSchema},
   output: {schema: GenerateThreadOutputSchema},
   prompt: `You are an expert X/Twitter thread writer. Your task is to take the user's source material and create a compelling, easy-to-read thread with a specified number of posts.
@@ -55,7 +55,18 @@ const generateThreadFlow = ai.defineFlow(
     outputSchema: GenerateThreadOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    try {
+        const {output} = await prompt(input);
+        return output!;
+    } catch(e: any) {
+        console.error(e);
+        const errorMessage = e.message.includes('429') 
+            ? "The AI service is rate-limited. Please try again shortly."
+            : "An unexpected error occurred. Please check the console.";
+        
+        return {
+            thread: [`Error: ${errorMessage}`]
+        }
+    }
   }
 );

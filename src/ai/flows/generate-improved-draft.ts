@@ -13,7 +13,7 @@ import {
     type GenerateImprovedDraftInput
 } from '@/ai/schemas/generate-improved-draft';
 import { GenerateImprovedDraftOutput } from '@/ai/schemas/generate-improved-draft';
-import { googleAI } from '@genkit-ai/googleai';
+import { groq } from '@genkit-ai/groq';
 
 export async function generateImprovedDraft(
   input: GenerateImprovedDraftInput
@@ -23,7 +23,7 @@ export async function generateImprovedDraft(
 
 const prompt = ai.definePrompt({
   name: 'generateImprovedDraftPrompt',
-  model: googleAI.model('gemini-1.5-flash-latest'),
+  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateImprovedDraftInputSchema},
   output: {schema: GenerateImprovedDraftOutputSchema},
   prompt: `You are an expert social media manager specializing in creating engaging content for X. You understand the modern X algorithm, which prioritizes replies and quality content over hashtags.
@@ -120,7 +120,18 @@ const generateImprovedDraftFlow = ai.defineFlow(
     outputSchema: GenerateImprovedDraftOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    try {
+        const {output} = await prompt(input);
+        return output!;
+    } catch(e: any) {
+        console.error(e);
+        const errorMessage = e.message.includes('429') 
+            ? "The AI service is rate-limited. Please try again shortly."
+            : "An unexpected error occurred. Please check the console.";
+        
+        return {
+            improvedDraft: `Error: ${errorMessage}`
+        }
+    }
   }
 );
