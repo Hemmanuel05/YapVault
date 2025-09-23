@@ -12,7 +12,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateThreadInputSchema = z.object({
-  topic: z.string().describe('The topic or main idea for the thread.'),
+  sourceMaterial: z.string().describe('The topic, source material, docs, or links for the thread.'),
   numPosts: z.number().min(2).max(25).describe('The number of posts to include in the thread.'),
 });
 export type GenerateThreadInput = z.infer<typeof GenerateThreadInputSchema>;
@@ -32,11 +32,11 @@ const prompt = ai.definePrompt({
   name: 'generateThreadPrompt',
   input: {schema: GenerateThreadInputSchema},
   output: {schema: GenerateThreadOutputSchema},
-  prompt: `You are an expert X/Twitter thread writer. Your task is to take a user's topic and create a compelling, easy-to-read thread with a specified number of posts.
+  prompt: `You are an expert X/Twitter thread writer. Your task is to take the user's source material and create a compelling, easy-to-read thread with a specified number of posts.
 
 **Instructions:**
 
-1.  **Deconstruct the Topic:** Break down the main topic into a logical sequence of points, with one main idea per post.
+1.  **Deconstruct the Source Material:** Break down the main topic from the source material into a logical sequence of points, with one main idea per post.
 2.  **First Post (Hook):** The first post MUST be a strong hook to grab the reader's attention and make them want to read more.
 3.  **Body Posts:** Each subsequent post should build on the last, providing more detail, examples, or arguments. Use clear language and simple sentences. Use line breaks to improve readability.
 4.  **Final Post (Conclusion):** The last post should summarize the thread, offer a final takeaway, or ask a question to encourage engagement.
@@ -44,8 +44,8 @@ const prompt = ai.definePrompt({
 6.  **Character Limit:** Ensure each post is well under the 280-character limit to be safe.
 7.  **Output Format:** Return the posts as an array of strings.
 
-**Topic:**
-{{{topic}}}
+**Source Material:**
+{{{sourceMaterial}}}
 
 **Number of Posts:**
 {{{numPosts}}}

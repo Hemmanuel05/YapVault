@@ -14,10 +14,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Wand2, Copy, Check } from 'lucide-react';
+import { Loader2, Wand2, Copy, Check, MessageSquareQuote } from 'lucide-react';
 
 export function ThreadGeneratorClient() {
-  const [topic, setTopic] = useState('');
+  const [sourceMaterial, setSourceMaterial] = useState('');
   const [numPosts, setNumPosts] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<GenerateThreadOutput | null>(null);
@@ -25,10 +25,10 @@ export function ThreadGeneratorClient() {
   const { toast } = useToast();
 
   const handleGenerate = async () => {
-    if (!topic.trim()) {
+    if (!sourceMaterial.trim()) {
       toast({
-        title: 'Topic is empty',
-        description: 'Please enter a topic to generate a thread.',
+        title: 'Source material is empty',
+        description: 'Please enter a topic, notes, or links to generate a thread.',
         variant: 'destructive',
       });
       return;
@@ -38,7 +38,7 @@ export function ThreadGeneratorClient() {
     setResult(null);
 
     try {
-      const threadResult = await generateThread({ topic, numPosts });
+      const threadResult = await generateThread({ sourceMaterial, numPosts });
       setResult(threadResult);
       setCopiedStates(new Array(threadResult.thread.length).fill(false));
     } catch (error) {
@@ -69,20 +69,20 @@ export function ThreadGeneratorClient() {
     <div className="grid gap-8 lg:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Thread Topic</CardTitle>
+          <CardTitle>Thread Source Material</CardTitle>
           <CardDescription>
-            Enter the main idea or topic for your thread. The AI will break it
+            Enter the main topic, notes, links, or docs for your thread. The AI will break it
             down into a series of connected posts.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="topic">Topic</Label>
+            <Label htmlFor="topic">Source Material</Label>
             <Textarea
               id="topic"
-              placeholder="e.g., 'A deep dive into how ZK-proofs are changing on-chain privacy...'"
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
+              placeholder="e.g., Paste a link to a whitepaper, some documentation, or your raw notes..."
+              value={sourceMaterial}
+              onChange={(e) => setSourceMaterial(e.target.value)}
               rows={6}
               className="text-base"
             />
