@@ -13,6 +13,7 @@ import {
     type GenerateThreadInput,
 } from '@/ai/schemas/generate-thread';
 import { GenerateThreadOutput } from '@/ai/schemas/generate-thread';
+import { googleAI } from '@genkit-ai/googleai';
 
 export async function generateThread(
   input: GenerateThreadInput
@@ -22,6 +23,7 @@ export async function generateThread(
 
 const prompt = ai.definePrompt({
   name: 'generateThreadPrompt',
+  model: googleAI.model('gemini-1.5-flash-latest'),
   input: {schema: GenerateThreadInputSchema},
   output: {schema: GenerateThreadOutputSchema},
   prompt: `You are an expert X/Twitter thread writer. Your task is to take the user's source material and create a compelling, easy-to-read thread with a specified number of posts.

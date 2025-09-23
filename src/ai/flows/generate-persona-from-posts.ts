@@ -13,6 +13,7 @@ import {
     type GeneratePersonaFromPostsInput,
 } from '@/ai/schemas/generate-persona-from-posts';
 import { GeneratePersonaFromPostsOutput } from '@/ai/schemas/generate-persona-from-posts';
+import { googleAI } from '@genkit-ai/googleai';
 
 
 export async function generatePersonaFromPosts(
@@ -23,6 +24,7 @@ export async function generatePersonaFromPosts(
 
 const prompt = ai.definePrompt({
   name: 'generatePersonaFromPostsPrompt',
+  model: googleAI.model('gemini-1.5-flash-latest'),
   input: {schema: GeneratePersonaFromPostsInputSchema},
   output: {schema: GeneratePersonaFromPostsOutputSchema},
   prompt: `You are an expert brand strategist and social media analyst. Your task is to analyze a collection of a user's past X/Twitter posts and synthesize a concise, insightful persona description.

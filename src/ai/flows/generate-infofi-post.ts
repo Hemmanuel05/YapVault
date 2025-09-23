@@ -13,6 +13,7 @@ import {
     type GenerateInfoFiPostInput
 } from '@/ai/schemas/generate-infofi-post';
 import { GenerateInfoFiPostOutput } from '@/ai/schemas/generate-infofi-post';
+import { googleAI } from '@genkit-ai/googleai';
 
 export async function generateInfoFiPost(
   input: GenerateInfoFiPostInput
@@ -22,6 +23,7 @@ export async function generateInfoFiPost(
 
 const prompt = ai.definePrompt({
   name: 'generateInfoFiPostPrompt',
+  model: googleAI.model('gemini-1.5-flash-latest'),
   input: {schema: GenerateInfoFiPostInputSchema},
   output: {schema: GenerateInfoFiPostOutputSchema},
   prompt: `# InfoFi Smart Content Generator (Kaito/Yap Points Optimized)

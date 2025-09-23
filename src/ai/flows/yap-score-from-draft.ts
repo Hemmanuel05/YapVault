@@ -13,6 +13,7 @@ import {
     type YapScoreFromDraftInput
 } from '@/ai/schemas/yap-score-from-draft';
 import { YapScoreFromDraftOutput } from '@/ai/schemas/yap-score-from-draft';
+import { googleAI } from '@genkit-ai/googleai';
 
 export async function yapScoreFromDraft(input: YapScoreFromDraftInput): Promise<YapScoreFromDraftOutput> {
   return yapScoreFromDraftFlow(input);
@@ -20,6 +21,7 @@ export async function yapScoreFromDraft(input: YapScoreFromDraftInput): Promise<
 
 const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
+  model: googleAI.model('gemini-1.5-flash-latest'),
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
   prompt: `# X Algorithm Content Optimizer Prompt (2025 Update)

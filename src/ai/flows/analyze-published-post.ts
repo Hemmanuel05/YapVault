@@ -13,6 +13,7 @@ import {
     type AnalyzePublishedPostInput
 } from '@/ai/schemas/analyze-published-post';
 import { AnalyzePublishedPostOutput } from '@/ai/schemas/analyze-published-post';
+import { googleAI } from '@genkit-ai/googleai';
 
 
 export async function analyzePublishedPost(
@@ -23,6 +24,7 @@ export async function analyzePublishedPost(
 
 const prompt = ai.definePrompt({
   name: 'analyzePublishedPostPrompt',
+  model: googleAI.model('gemini-1.5-flash-latest'),
   input: {schema: AnalyzePublishedPostInputSchema},
   output: {schema: AnalyzePublishedPostOutputSchema},
   prompt: `You are an expert X/Twitter growth strategist. Your task is to provide a "post-mortem" analysis of a user's published post.
