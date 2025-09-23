@@ -16,7 +16,6 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { LogOut, User, Home, Loader2 } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { ActivityLogProvider } from '@/hooks/use-activity-log';
 import { auth } from '@/lib/firebase';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
@@ -47,7 +46,6 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   }
   
   return (
-    <ActivityLogProvider>
       <SidebarProvider>
         <Sidebar>
           <SidebarHeader>
@@ -65,11 +63,11 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
                 <Button variant="ghost" className="h-12 w-full justify-start gap-2 px-2">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={userAvatar?.imageUrl} alt="User avatar" data-ai-hint="person portrait" />
-                    <AvatarFallback>IZ</AvatarFallback>
+                    <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div className="text-left group-data-[collapsible=icon]:hidden">
-                      <p className="text-sm font-medium">Ike Zahuemma</p>
-                      <p className="text-xs text-muted-foreground">@heisninja</p>
+                      <p className="text-sm font-medium">{user.displayName || user.email}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
                   </div>
                 </Button>
               </DropdownMenuTrigger>
@@ -104,7 +102,6 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
           </div>
         </SidebarInset>
       </SidebarProvider>
-    </ActivityLogProvider>
   )
 }
 

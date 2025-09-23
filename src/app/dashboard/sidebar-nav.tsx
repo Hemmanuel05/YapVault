@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
 import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion, Home, SearchCheck, Shield } from 'lucide-react';
+import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion, Home, SearchCheck, Shield, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Separator } from '@/components/ui/separator';
@@ -47,6 +47,11 @@ const navItems = [
     href: '/dashboard/post-mortem-analyzer',
     label: 'Post-Mortem',
     icon: <SearchCheck />,
+  },
+  {
+    href: '/dashboard/profile',
+    label: 'Profile',
+    icon: <User />,
   }
 ];
 
