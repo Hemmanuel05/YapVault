@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -17,6 +18,10 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { Skeleton } from '@/components/ui/skeleton';
+import { auth, db } from '@/lib/firebase';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { updateProfile } from 'firebase/auth';
+
 
 export default function ProfilePage() {
   const { user, isLoading } = useAuth();
@@ -50,28 +55,50 @@ export default function ProfilePage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      toast({ title: "Not Authenticated", description: "You must be logged in to update your profile.", variant: "destructive" });
+      return;
+    }
+
     setIsSaving(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSaving(false);
+    try {
+      let newAvatarUrl = user.photoURL;
+
+      if (newAvatarFile) {
+        const storage = getStorage();
+        const storageRef = ref(storage, `avatars/${user.uid}/${newAvatarFile.name}`);
+        const snapshot = await uploadBytes(storageRef, newAvatarFile);
+        newAvatarUrl = await getDownloadURL(snapshot.ref);
+      }
+
+      await updateProfile(user, {
+        displayName: username,
+        photoURL: newAvatarUrl,
+      });
+
+      // Force a reload of the user to get the latest profile info
+      await user.reload();
+
       toast({
         title: 'Profile Updated',
         description: 'Your changes have been saved successfully.',
       });
-      // Here you would typically handle the file upload and update user profile
-      if (newAvatarFile) {
-        console.log('Uploading new avatar:', newAvatarFile.name);
-      }
-      if (user) {
-        // Example of updating user profile would go here
-        // updateProfile(user, { displayName: username, photoURL: newAvatarUrl });
-      }
-    }, 1500);
+
+    } catch (error: any) {
+       toast({
+        title: 'Update Failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
+      setNewAvatarFile(null);
+    }
   };
   
-  if (isLoading) {
+  if (isLoading || !user) {
     return (
         <div className="space-y-8">
             <PageHeader

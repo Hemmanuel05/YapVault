@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -45,8 +46,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     );
   }
 
-  const avatarId = `avatar${(user.email?.length || 1) % 8 + 1}`;
-  const userAvatar = PlaceHolderImages.find(img => img.id === avatarId);
+  const defaultAvatarId = `avatar${(user.email?.length || 1) % 8 + 1}`;
+  const defaultUserAvatar = PlaceHolderImages.find(img => img.id === defaultAvatarId);
+  const userAvatarUrl = user.photoURL || defaultUserAvatar?.imageUrl;
+
   
   return (
       <SidebarProvider>
@@ -65,7 +68,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="h-12 w-full justify-start gap-2 px-2">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src={userAvatar?.imageUrl} alt="User avatar" data-ai-hint="person portrait" />
+                    <AvatarImage src={userAvatarUrl} alt="User avatar" data-ai-hint="person portrait" />
                     <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div className="text-left group-data-[collapsible=icon]:hidden">
@@ -108,7 +111,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                    <Avatar className="h-8 w-8">
-                    <AvatarImage src={userAvatar?.imageUrl} alt="User avatar" data-ai-hint="person portrait" />
+                    <AvatarImage src={userAvatarUrl} alt="User avatar" data-ai-hint="person portrait" />
                     <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
                   </Avatar>
                 </Button>
