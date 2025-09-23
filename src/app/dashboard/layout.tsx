@@ -1,3 +1,5 @@
+"use client";
+
 import {
   SidebarProvider,
   Sidebar,
@@ -15,6 +17,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { LogOut, User, Home } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { ActivityLogProvider } from '@/hooks/use-activity-log';
+import { auth } from '@/lib/firebase';
+import { useRouter } from 'next/navigation';
 
 export default function DashboardLayout({
   children,
@@ -22,6 +26,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const userAvatar = PlaceHolderImages.find(img => img.id === 'avatar1');
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await auth.signOut();
+    router.push('/login');
+  };
   
   return (
     <ActivityLogProvider>
@@ -66,12 +76,11 @@ export default function DashboardLayout({
                   </DropdownMenuItem>
                 </Link>
                 <DropdownMenuSeparator />
-                <Link href="/login">
-                  <DropdownMenuItem>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                  </DropdownMenuItem>
-                </Link>
+                {/* We can't use a Link here because we need to perform an async action */}
+                <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarFooter>

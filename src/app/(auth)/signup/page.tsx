@@ -14,24 +14,47 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { auth } from '@/lib/firebase';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { Loader2 } from 'lucide-react';
 
 const inviteCodes = ['YAP1', 'YAP2', 'YAP3'];
 
 export default function SignupPage() {
   const router = useRouter();
   const [inviteCode, setInviteCode] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (inviteCodes.includes(inviteCode)) {
-      router.push('/dashboard');
-    } else {
+    if (!inviteCodes.includes(inviteCode)) {
       toast({
         title: 'Invalid Invite Code',
         description: 'Please enter a valid invite code.',
         variant: 'destructive',
       });
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      toast({
+        title: 'Account Created!',
+        description: 'You have successfully signed up. Redirecting to dashboard...',
+      });
+      router.push('/dashboard');
+    } catch (error: any) {
+      toast({
+        title: 'Sign Up Failed',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,11 +76,20 @@ export default function SignupPage() {
               placeholder="m@example.com"
               required
               className="bg-background"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required className="bg-background" />
+            <Input
+              id="password"
+              type="password"
+              required
+              className="bg-background"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="invite-code">Invite Code</Label>
@@ -71,7 +103,8 @@ export default function SignupPage() {
               onChange={(e) => setInviteCode(e.target.value)}
             />
           </div>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Create account
           </Button>
         </CardContent>

@@ -66,19 +66,18 @@ const featureMap: {
 
 export default function AdminPage() {
   const { activityLog } = useActivityLog();
-  const sortedLog = [...activityLog].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
   return (
     <div className="space-y-8">
       <PageHeader
         title="Admin Dashboard"
-        description="Monitor user activity across the platform. (Logs are reset on page refresh)"
+        description="Monitor user activity across the platform in real-time."
       />
       <Card>
         <CardHeader>
-          <CardTitle>Recent User Activity</CardTitle>
+          <CardTitle>Real-Time User Activity</CardTitle>
           <CardDescription>
-            A log of the most recent actions taken by users in this session.
+            A live log of all actions taken by users across the application, stored in Firestore.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -93,21 +92,21 @@ export default function AdminPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {sortedLog.length === 0 ? (
+              {activityLog.length === 0 ? (
                  <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">
                         No activity recorded yet. Go use a feature!
                     </TableCell>
                  </TableRow>
               ) : (
-                sortedLog.map((log: ActivityLogEntry, index: number) => {
+                activityLog.map((log: ActivityLogEntry) => {
                   const userAvatar = PlaceHolderImages.find(
                     (img) => img.id === log.user.avatarId
                   );
                   const featureInfo = featureMap[log.feature];
 
                   return (
-                    <TableRow key={index}>
+                    <TableRow key={log.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <Avatar className="h-8 w-8">
@@ -119,7 +118,7 @@ export default function AdminPage() {
                           <div>
                             <p className="font-medium">{log.user.name}</p>
                             <p className="text-xs text-muted-foreground">
-                              {log.user.handle}
+                              {log.user.email}
                             </p>
                           </div>
                         </div>
@@ -143,7 +142,7 @@ export default function AdminPage() {
                         {log.details}
                       </TableCell>
                       <TableCell className="text-right text-xs text-muted-foreground">
-                        {new Date(log.timestamp).toLocaleString()}
+                        {log.timestamp.toDate().toLocaleString()}
                       </TableCell>
                     </TableRow>
                   );

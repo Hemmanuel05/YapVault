@@ -1,18 +1,23 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { auth, db } from '@/lib/firebase';
+import { collection, addDoc, onSnapshot, query, orderBy, Timestamp } from 'firebase/firestore';
+import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 
 type User = {
   name: string;
   handle: string;
   avatarId: string;
+  email: string | null;
 };
 
 export type ActivityLogEntry = {
+  id?: string;
   user: User;
   action: string;
   feature: string;
-  timestamp: string;
+  timestamp: Timestamp;
   details: string;
 };
 
@@ -25,21 +30,55 @@ const ActivityLogContext = createContext<ActivityLogContextType | undefined>(und
 
 export const ActivityLogProvider = ({ children }: { children: ReactNode }) => {
   const [activityLog, setActivityLog] = useState<ActivityLogEntry[]>([]);
-  
-  // This is a mock user. In a real app, you'd get this from your auth context.
-  const currentUser: User = {
-    name: 'Ike Zahuemma',
-    handle: '@heisninja',
-    avatarId: 'avatar1',
-  };
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-  const addActivity = (newActivity: Omit<ActivityLogEntry, 'user' | 'timestamp'>) => {
-    const activity: ActivityLogEntry = {
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user: FirebaseUser | null) => {
+      if (user) {
+        // In a real app, you might fetch profile info from Firestore here
+        // For now, we'll create a mock profile from the auth user
+        const atIndex = user.email?.indexOf('@') ?? -1;
+        const handle = atIndex > -1 ? `@${user.email?.substring(0, atIndex)}` : '@user';
+        setCurrentUser({
+          name: user.displayName || user.email || 'Anonymous',
+          handle: handle,
+          avatarId: `avatar${(user.email?.length || 1) % 8 + 1}`,
+          email: user.email,
+        });
+      } else {
+        setCurrentUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const q = query(collection(db, 'activityLog'), orderBy('timestamp', 'desc'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const logs: ActivityLogEntry[] = [];
+      querySnapshot.forEach((doc) => {
+        logs.push({ id: doc.id, ...doc.data() } as ActivityLogEntry);
+      });
+      setActivityLog(logs);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const addActivity = async (newActivity: Omit<ActivityLogEntry, 'user' | 'timestamp' | 'id'>) => {
+    if (!currentUser) {
+      console.error("Cannot add activity: no user is signed in.");
+      return;
+    }
+    const activity = {
       ...newActivity,
       user: currentUser,
-      timestamp: new Date().toISOString(),
+      timestamp: Timestamp.now(),
     };
-    setActivityLog(prevLog => [activity, ...prevLog]);
+    try {
+      await addDoc(collection(db, 'activityLog'), activity);
+    } catch (error) {
+      console.error("Error writing activity to Firestore: ", error);
+    }
   };
 
   return (

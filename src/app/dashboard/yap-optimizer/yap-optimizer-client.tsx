@@ -93,7 +93,8 @@ function GeneratePersonaDialog({ onPersonaGenerated, children }: { onPersonaGene
           </Button>
         </DialogFooter>
       </DialogContent>
-    )
+    </Dialog>
+  )
 }
 
 export function YapOptimizerClient() {
