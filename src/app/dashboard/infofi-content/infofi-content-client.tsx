@@ -197,7 +197,7 @@ export function InfoFiContentClient() {
                                 <p className="text-muted-foreground">{result.recommendation.timing}</p>
                             </div>
                             <div>
-                                <h4 className="font-semibold">Follow-up Opportunities</h4>
+                                <h4 className="font-semibold">Next Steps / Content Strategy</h4>
                                 <p className="text-muted-foreground">{result.recommendation.followUp}</p>
                             </div>
                         </CardContent>

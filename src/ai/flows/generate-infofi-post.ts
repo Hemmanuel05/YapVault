@@ -33,7 +33,7 @@ const GenerateInfoFiPostOutputSchema = z.object({
   recommendation: z.object({
     bestVersion: z.string().describe('Which version is recommended and why.'),
     timing: z.string().describe('When to post for maximum impact.'),
-    followUp: z.string().describe('Potential thread expansion or related content ideas.'),
+    followUp: z.string().describe('Potential thread expansion, related content ideas, or infographic suggestions.'),
   }),
 });
 export type GenerateInfoFiPostOutput = z.infer<typeof GenerateInfoFiPostOutputSchema>;
@@ -80,28 +80,21 @@ Generate high-quality, authoritative crypto/AI analysis posts. The goal is to ea
 
 Based on the provided source material, create 3-5 post variations. Each variation should be tailored to a different audience or angle, but all should maintain a tone of credible authority.
 
-### Variation 1: The "Alpha" Deep-Dive
--   Focus on the most unique technical finding.
--   Include metrics to support your analysis.
--   Appeal to developers/researchers looking for an edge.
+### Post Variations:
+-   **The "Alpha" Deep-Dive**: Focus on the most unique technical finding and appeal to developers/researchers.
+-   **The Market-Moving Prediction**: Connect technical findings to market predictions for analysts/traders.
+-   **The Comparative Analysis**: Compare the project to others, highlighting a critical flaw or advantage for ecosystem researchers.
+-   **The Bold Hypothesis**: Propose a strong, timeline-specific hypothesis for forward-thinking investors.
+-   **The Challenging Question**: Turn your findings into a thought-provoking question for the community.
 
-### Variation 2: The Market-Moving Prediction
--   Connect technical findings to a plausible market prediction.
--   Discuss investment/trading implications.
--   Appeal to analysts/traders who want to be ahead of the curve.
+## Recommendation & Follow-Up Strategy
 
-### Variation 3: The Comparative Analysis
--   Compare the project to others, highlighting a critical flaw or advantage.
--   Frame it as a contribution to the ongoing market discussion.
--   Appeal to ecosystem researchers who respect strong, evidence-based opinions.
-
-### Variation 4: The Bold Hypothesis
--   Based on your analysis, propose a strong, timeline-specific hypothesis (e.g., 3-6 months).
--   Appeal to forward-thinking investors who appreciate well-reasoned speculation.
-
-### Variation 5: The Challenging Question
--   Turn your findings into a thought-provoking question for the community.
--   Appeal to researchers who want to debate and build on ideas.
+After generating the posts, provide a recommendation:
+1.  **Best Version**: Recommend the strongest post variation and explain why.
+2.  **Timing**: Suggest the optimal time to post for maximum impact.
+3.  **Follow-Up**: Propose a concrete next step. This could be a thread expansion, a related topic to explore, or a suggestion for a visual asset.
+    - **Infographic Idea**: If the content is dense or data-heavy, suggest creating an infographic. Briefly outline the key points or data visuals to include. Example: "Follow-Up: Create an infographic visualizing the token distribution comparison between Project X and Project Y. Highlight the vesting schedules and initial float."
+    - **Thread Idea**: If the topic has more depth, suggest expanding it into a thread.
 
 ## Quality Checkpoints
 
