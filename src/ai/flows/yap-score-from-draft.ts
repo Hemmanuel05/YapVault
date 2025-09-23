@@ -1,9 +1,9 @@
 'use server';
 
 /**
- * @fileOverview Calculates a Yap score for a given X post draft based on sentiment and keywords.
+ * @fileOverview Calculates a Yap score and Tweepcred score for a given X post draft.
  *
- * - yapScoreFromDraft - A function that accepts an X post draft and returns a Yap score.
+ * - yapScoreFromDraft - A function that accepts an X post draft and returns a Yap score and Tweepcred analysis.
  * - YapScoreFromDraftInput - The input type for the yapScoreFromDraft function.
  * - YapScoreFromDraftOutput - The return type for the yapScoreFromDraft function.
  */
@@ -21,6 +21,8 @@ const YapScoreFromDraftOutputSchema = z.object({
   sentiment: z.string().describe('The sentiment of the draft (positive, negative, neutral).'),
   keywords: z.array(z.string()).describe('Relevant keywords found in the draft.'),
   suggestions: z.array(z.string()).describe('Suggestions to improve the Yap score based on the modern X algorithm.'),
+  tweepcredScore: z.number().describe('The predicted Tweepcred score (0-10 scale).'),
+  tweepcredSuggestions: z.array(z.string()).describe('Suggestions to improve the Tweepcred score.'),
 });
 export type YapScoreFromDraftOutput = z.infer<typeof YapScoreFromDraftOutputSchema>;
 
@@ -32,22 +34,28 @@ const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
-  prompt: `You are an AI Yap score predictor for the Kaito community called YapVault. You are an expert on the modern X algorithm, which rewards high-quality content and replies, and does not prioritize hashtags.
+  prompt: `You are an AI Yap score and Tweepcred predictor for the Kaito community called YapVault. You are an expert on the modern X algorithm, which rewards high-quality content and replies, and does not prioritize hashtags.
 
-  Analyze the following X post draft.
+  Analyze the following X post draft for two things: Yap Score and Tweepcred Score.
 
-  Your scoring should be based on sentiment and keywords.
-  - Sentiment: A positive sentiment should have a higher score (2x weight).
-  - Keywords: Give a +15% boost for each of the following keywords found: 'GRID', 'ROMA', 'zkSync', 'Kaia', 'Sophon'.
+  1.  **Yap Score Analysis:**
+      Your Yap scoring should be based on sentiment and keywords.
+      - Sentiment: A positive sentiment should have a higher score (2x weight).
+      - Keywords: Give a +15% boost for each of the following keywords found: 'GRID', 'ROMA', 'zkSync', 'Kaia', 'Sophon'.
+      Based on this, predict a Yap score on a 0-10 scale.
+      Also provide:
+      - A sentiment analysis (positive, negative, neutral).
+      - A list of the relevant keywords found.
+      - A list of suggestions to improve the Yap score. Suggestions should focus on modern X engagement strategies like asking open-ended questions, improving clarity, or sparking respectful debate. Avoid suggesting hashtags.
 
-  Based on this, predict a Yap score on a 0-10 scale.
+  2.  **Tweepcred Score Analysis:**
+      Tweepcred is X's internal reputation system. A high score increases reach, a low score reduces it. Analyze the draft for behaviors that would affect this score.
+      - Penalize: Aggressive language, spammy content, rule-breaking behavior, and anything that could be seen as negative manipulation.
+      - Reward: Positive community engagement, providing value, fostering healthy discussion.
+      - Based on this, predict a Tweepcred score on a 0-10 scale.
+      - Provide a list of suggestions for improving the post to protect or enhance the user's Tweepcred.
 
   Draft: {{{draft}}}
-
-  Also provide:
-  - A sentiment analysis (positive, negative, neutral).
-  - A list of the relevant keywords found.
-  - A list of suggestions to improve the score. Suggestions should focus on modern X engagement strategies, like asking open-ended questions, making a controversial (but respectful) statement to spark debate, or improving clarity. Avoid suggesting hashtags.
 `,
 });
 
@@ -89,6 +97,9 @@ const yapScoreFromDraftFlow = ai.defineFlow(
     // Add a default suggestion if none are returned
     if (!output.suggestions || output.suggestions.length === 0) {
       output.suggestions = ["Try asking an open-ended question to encourage more detailed replies."];
+    }
+    if (!output.tweepcredSuggestions || output.tweepcredSuggestions.length === 0) {
+        output.tweepcredSuggestions = ["This post looks good and follows community guidelines. Keep it up!"];
     }
     
     return {
