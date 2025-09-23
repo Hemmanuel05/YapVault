@@ -5,7 +5,7 @@
  *
  * - generateImprovedDraft - A function that improves a draft based on a selected persona.
  * - GenerateImprovedDraftInput - The input type for the generateImprovedDraft function.
- * - GenerateImprovedDraftOutput - The return type for the generateImprovedDraft function.
+ * - GenerateImprovedDraftOutput - The return type for the generateImproveddraft function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -13,14 +13,23 @@ import {z} from 'genkit';
 
 const GenerateImprovedDraftInputSchema = z.object({
   draft: z.string().describe('The X/Twitter draft to improve.'),
-  persona: z.string().optional().describe('The persona to adopt for the rewrite (e.g., "The Wale", "The Bandit").'),
+  persona: z
+    .string()
+    .optional()
+    .describe(
+      'The persona to adopt for the rewrite (e.g., "The Wale", "The Bandit", "The R2D2").'
+    ),
 });
-export type GenerateImprovedDraftInput = z.infer<typeof GenerateImprovedDraftInputSchema>;
+export type GenerateImprovedDraftInput = z.infer<
+  typeof GenerateImprovedDraftInputSchema
+>;
 
 const GenerateImprovedDraftOutputSchema = z.object({
   improvedDraft: z.string().describe('The improved X/Twitter draft.'),
 });
-export type GenerateImprovedDraftOutput = z.infer<typeof GenerateImprovedDraftOutputSchema>;
+export type GenerateImprovedDraftOutput = z.infer<
+  typeof GenerateImprovedDraftOutputSchema
+>;
 
 export async function generateImprovedDraft(
   input: GenerateImprovedDraftInput
@@ -62,6 +71,39 @@ You MUST adopt the following persona for your rewrite:
     *   Appeals to a wide audience by avoiding overly technical jargon.
     *   Posts multiple times a day, focusing on generating replies for each.
     *   The voice is dynamic, funny, and relatable, never staying on one topic for too long.
+{{/ifCond}}
+{{#ifCond persona '==' 'The R2D2'}}
+*   **Style:** Informative, scannable, data-oriented news reporter.
+*   **Tactics:**
+    *   Uses a clear title with a date (e.g., "Crypto/InfoFi News 22.09").
+    *   Organizes information into logical sections with clear headings (e.g., "▫️Fresh announcements:", "▫️TGEs and Snapshots", "▫️Expected next:").
+    *   Uses the "▫️" character for section headings.
+    *   Each item is a short, concise bullet point. Use ">" for sub-bullets if needed.
+    *   The tone is factual and direct, designed for quick consumption.
+    *   Can include a "PS" section for personal notes or follow-up actions.
+*   **Example Structure:**
+    Crypto/InfoFi News 22.09
+
+    September Calendar/ discuss at YAPline Spaces 12:30 PM UTC today
+
+    ▫️Fresh announcements:
+
+    >Kaito Capital Launchpad this week: Novastro & Limitless 
+    >Extended visibility for Kaito Leaderboard this week? 
+
+    ▫️TGEs and Snapshots
+
+    Pending rewards distribution & TGEs
+
+    >Mitosis S2 - $50K / + special rewards for Yarm
+    >Portal to Bitcoin Yappers S2 ended
+
+    ▫️Expected next: 
+
+    23rd: Bless Network TGE/ claim open
+    24th: Near final monthly snapshot/ low completion 58 places on the creator leaderboard 
+
+    PS: let me know in the comments if I missed any other major events...
 {{/ifCond}}
 
 Rewrite the draft below to match the persona of **{{{persona}}}**.

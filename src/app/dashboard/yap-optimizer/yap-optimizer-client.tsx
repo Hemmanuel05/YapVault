@@ -123,6 +123,7 @@ export function YapOptimizerClient() {
                   <SelectItem value="default">Default</SelectItem>
                   <SelectItem value="The Wale">The Wale</SelectItem>
                   <SelectItem value="The Bandit">The Bandit</SelectItem>
+                  <SelectItem value="The R2D2">The R2D2</SelectItem>
                 </SelectContent>
               </Select>
               <Button onClick={handleFixTweet} disabled={isFixing || isLoading} variant="outline" className="w-full">
