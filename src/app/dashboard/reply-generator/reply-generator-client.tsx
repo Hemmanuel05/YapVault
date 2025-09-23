@@ -138,10 +138,9 @@ export function ReplyGeneratorClient() {
                         <EvaluationMetric label="Overall Quality" score={result.evaluation.overallQuality} />
                         <Separator/>
                         <EvaluationMetric label="Human Authenticity" score={result.evaluation.humanAuthenticity} />
-                        <EvaluationMetric label="Learning Mindset" score={result.evaluation.learningMindset} />
                         <EvaluationMetric label="Engagement Potential" score={result.evaluation.engagementPotential} />
-                        <EvaluationMetric label="Curiosity Level" score={result.evaluation.curiosityLevel} />
                         <EvaluationMetric label="Algorithm Appeal" score={result.evaluation.algorithmAppeal} />
+                        <EvaluationMetric label="Controversy Level" score={result.evaluation.controversyLevel} />
                         <Separator/>
                         <EvaluationMetric label="Rudeness Level" score={result.evaluation.rudenessLevel} />
                     </CardContent>
