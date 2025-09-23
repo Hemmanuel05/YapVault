@@ -24,7 +24,7 @@ export async function generateAuthenticReply(
 
 const prompt = ai.definePrompt({
   name: 'generateAuthenticReplyPrompt',
-  model: googleAI.model('gemini-1.5-pro-latest'),
+  model: googleAI.model('gemini-1.5-flash-latest'),
   input: {schema: GenerateAuthenticReplyInputSchema},
   output: {schema: GenerateAuthenticReplyOutputSchema},
   prompt: `# X ALGORITHM-OPTIMIZED REPLY GENERATION PROMPT
