@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare, Sparkles, MessageSquareQuote } from 'lucide-react';
+import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -24,6 +24,11 @@ const navItems = [
     href: '/dashboard/thread-generator',
     label: 'Thread Generator',
     icon: <MessageSquareQuote />,
+  },
+  {
+    href: '/dashboard/content-ideas',
+    label: 'Content Ideas',
+    icon: <Lightbulb />,
   }
 ];
 

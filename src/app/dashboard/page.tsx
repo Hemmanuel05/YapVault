@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowRight, BotMessageSquare, MessageSquareQuote, Sparkles } from 'lucide-react';
+import { ArrowRight, BotMessageSquare, MessageSquareQuote, Sparkles, Lightbulb } from 'lucide-react';
 
 const features = [
   {
@@ -28,6 +28,12 @@ const features = [
     description: 'Craft compelling X threads from a single topic, optimized for engagement and readability.',
     href: '/dashboard/thread-generator',
     icon: <MessageSquareQuote className="mb-4 h-10 w-10 text-accent" />,
+  },
+  {
+    title: 'Content Ideas',
+    description: 'Overcome writer\'s block by generating creative post ideas and hooks from a single topic.',
+    href: '/dashboard/content-ideas',
+    icon: <Lightbulb className="mb-4 h-10 w-10 text-accent" />,
   }
 ];
 
@@ -38,7 +44,7 @@ export default function DashboardPage() {
         title="Welcome to YapVault"
         description="Your all-in-one toolkit for navigating the Web3 social landscape."
       />
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
         {features.map((feature) => (
           <Card
             key={feature.title}
