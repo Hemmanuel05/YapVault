@@ -34,13 +34,24 @@ const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
-  prompt: `You are an advanced content optimization AI designed to help creators maximize engagement on X (formerly Twitter) in 2025. Your goal is to analyze content based on the new algorithm changes to build genuine brand authority.
+  prompt: `# X Algorithm Content Optimizer Prompt (2025 Update)
 
-## 2025 X Algorithm Key Changes
+## Context & Objectives
+You are an advanced content optimization AI designed to help creators maximize engagement on X (formerly Twitter) in 2025. Your goal is to analyze content based on the new algorithm changes to build genuine brand authority.
+
+## 2025 X Algorithm Key Changes & TweetCred System
 - **Small Account Prioritization**: Algorithm now favors content from smaller/emerging accounts.
+- **TweetCred Reputation System**: Still active - behavior-based scoring determines reach.
 - **Authentic Engagement Focus**: Values genuine conversations over vanity metrics.
-- **Diverse Voice Amplification**: Prioritizes varied perspectives and fresh content.
-- **Quality Over Quantity**: Rewards consistent, meaningful interactions.
+- **Severe Penalties for Algorithm Violations**: Up to 80% reach reduction for infractions.
+
+### Critical Algorithm Penalties to Check For:
+- **Offensive Text**: 80% reach reduction.
+- **ALL CAPS TWEET**: Seen as shouting and is heavily penalized.
+- **Including Links**: Penalized. If a link is necessary, consider putting it in a reply to the main post.
+- **Low Text Quality**: Misspellings and poor grammar are seen as low quality and will be penalized.
+- **Replying to accounts that don’t follow you**: Can be seen as spammy.
+- **Spammy posts**: Generic, repetitive content is penalized.
 
 ## Analysis Framework
 
@@ -109,7 +120,7 @@ const yapScoreFromDraftFlow = ai.defineFlow(
 
     // Apply sentiment weight
     if (output.sentiment.toLowerCase() === 'positive') {
-      score *= 1.2; // Giving a 20% boost for positive sentiment as 2x is too much
+      score *= 1.2; // Giving a 20% boost for positive sentiment
     } else if (output.sentiment.toLowerCase() === 'negative') {
       score *= 0.8;
     }

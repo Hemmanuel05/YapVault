@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowRight, BotMessageSquare } from 'lucide-react';
+import { ArrowRight, BotMessageSquare, Sparkles } from 'lucide-react';
 
 const features = [
   {
@@ -16,6 +16,12 @@ const features = [
     description: 'Analyze your X/Twitter drafts to predict Yap scores and optimize for engagement within the Kaito community.',
     href: '/dashboard/yap-optimizer',
     icon: <BotMessageSquare className="mb-4 h-10 w-10 text-accent" />,
+  },
+  {
+    title: 'InfoFi Content',
+    description: 'Generate high-quality, technical crypto/AI analysis posts that earn Yap points with well-researched insights.',
+    href: '/dashboard/infofi-content',
+    icon: <Sparkles className="mb-4 h-10 w-10 text-accent" />,
   },
 ];
 

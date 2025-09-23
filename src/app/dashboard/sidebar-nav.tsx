@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare } from 'lucide-react';
+import { BotMessageSquare, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -14,6 +14,11 @@ const navItems = [
     href: '/dashboard/yap-optimizer',
     label: 'Yap Optimizer',
     icon: <BotMessageSquare />,
+  },
+  {
+    href: '/dashboard/infofi-content',
+    label: 'InfoFi Content',
+    icon: <Sparkles />,
   },
 ];
 
