@@ -40,21 +40,23 @@ export default function DashboardLayout({
               <Button variant="ghost" className="h-12 w-full justify-start gap-2 px-2">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={userAvatar?.imageUrl} alt="User avatar" data-ai-hint="person portrait" />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarFallback>A</AvatarFallback>
                 </Avatar>
                 <div className="text-left group-data-[collapsible=icon]:hidden">
-                    <p className="text-sm font-medium">User</p>
-                    <p className="text-xs text-muted-foreground">user@kaito.ai</p>
+                    <p className="text-sm font-medium">Admin</p>
+                    <p className="text-xs text-muted-foreground">admin@kaito.ai</p>
                 </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right" align="start" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
+              <Link href="/dashboard/profile">
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <Link href="/login">
                 <DropdownMenuItem>
