@@ -24,6 +24,7 @@ const prompt = ai.definePrompt({
   name: 'generateThreadPrompt',
   input: {schema: GenerateThreadInputSchema},
   output: {schema: GenerateThreadOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert X/Twitter thread writer. Your task is to take the user's source material and create a compelling, easy-to-read thread with a specified number of posts.
 
 **Instructions:**

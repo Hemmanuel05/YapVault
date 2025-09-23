@@ -22,6 +22,7 @@ const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `# X Algorithm Content Optimizer Prompt (2025 Update)
 
 ## Context & Objectives

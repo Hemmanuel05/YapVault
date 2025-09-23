@@ -25,6 +25,7 @@ const prompt = ai.definePrompt({
   name: 'analyzePublishedPostPrompt',
   input: {schema: AnalyzePublishedPostInputSchema},
   output: {schema: AnalyzePublishedPostOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert X/Twitter growth strategist. Your task is to provide a "post-mortem" analysis of a user's published post.
 
 Analyze the post based on the following criteria, which are known to be favored by the modern X algorithm:

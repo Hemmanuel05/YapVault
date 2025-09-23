@@ -24,6 +24,7 @@ const prompt = ai.definePrompt({
   name: 'generateInfoFiPostPrompt',
   input: {schema: GenerateInfoFiPostInputSchema},
   output: {schema: GenerateInfoFiPostOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `# InfoFi Smart Content Generator (Kaito/Yap Points Optimized)
 
 ## Objective

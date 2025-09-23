@@ -25,6 +25,7 @@ const prompt = ai.definePrompt({
   name: 'generatePersonaFromPostsPrompt',
   input: {schema: GeneratePersonaFromPostsInputSchema},
   output: {schema: GeneratePersonaFromPostsOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert brand strategist and social media analyst. Your task is to analyze a collection of a user's past X/Twitter posts and synthesize a concise, insightful persona description.
 
 This persona description should be written in the style of a bio and capture the user's essence.

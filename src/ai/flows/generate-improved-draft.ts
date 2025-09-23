@@ -24,6 +24,7 @@ const prompt = ai.definePrompt({
   name: 'generateImprovedDraftPrompt',
   input: {schema: GenerateImprovedDraftInputSchema},
   output: {schema: GenerateImprovedDraftOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert social media manager specializing in creating engaging content for X. You understand the modern X algorithm, which prioritizes replies and quality content over hashtags.
 
 You will rewrite the user's draft to make it more engaging, clear, and likely to spark conversation.

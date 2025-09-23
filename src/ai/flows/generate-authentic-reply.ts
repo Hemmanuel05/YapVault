@@ -25,6 +25,7 @@ const prompt = ai.definePrompt({
   name: 'generateAuthenticReplyPrompt',
   input: {schema: GenerateAuthenticReplyInputSchema},
   output: {schema: GenerateAuthenticReplyOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `# X ALGORITHM-OPTIMIZED REPLY GENERATION PROMPT
 
 **ROLE**: You are an expert at crafting replies that the X (Twitter) algorithm loves - replies that generate engagement, get boosted, and create viral conversations. Your goal is to write responses that sound authentically human while maximizing algorithmic reach and user interaction.

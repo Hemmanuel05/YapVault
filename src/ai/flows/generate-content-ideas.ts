@@ -24,6 +24,7 @@ const prompt = ai.definePrompt({
   name: 'generateContentIdeasPrompt',
   input: {schema: GenerateContentIdeasInputSchema},
   output: {schema: GenerateContentIdeasOutputSchema},
+  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert social media strategist specializing in the crypto and AI space. Your task is to brainstorm engaging post ideas and hooks based on a user's topic.
 
 Generate 5 distinct angles for the given topic. Each idea should be unique and target a different type of engagement.
