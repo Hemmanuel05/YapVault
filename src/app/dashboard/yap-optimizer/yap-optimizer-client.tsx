@@ -2,17 +2,19 @@
 
 import { useState } from 'react';
 import { yapScoreFromDraft, YapScoreFromDraftOutput } from '@/ai/flows/yap-score-from-draft';
+import { generateImprovedDraft } from '@/ai/flows/generate-improved-draft';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { BotMessageSquare, Loader2 } from 'lucide-react';
+import { BotMessageSquare, Loader2, Wand2 } from 'lucide-react';
 import { YapScoreGauge } from '@/components/yap-score-gauge';
 import { Badge } from '@/components/ui/badge';
 
 export function YapOptimizerClient() {
   const [draft, setDraft] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isFixing, setIsFixing] = useState(false);
   const [result, setResult] = useState<YapScoreFromDraftOutput | null>(null);
   const { toast } = useToast();
 
@@ -44,6 +46,35 @@ export function YapOptimizerClient() {
     }
   };
 
+  const handleFixTweet = async () => {
+    if (!draft.trim()) {
+      toast({
+        title: 'Draft is empty',
+        description: 'Please enter some text to improve.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    setIsFixing(true);
+
+    try {
+      const { improvedDraft } = await generateImprovedDraft({ draft });
+      setDraft(improvedDraft);
+      // Clear previous results as the draft has changed
+      setResult(null);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: 'Failed to fix tweet',
+        description: 'Something went wrong. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsFixing(false);
+    }
+  };
+
   const getSentimentBadgeVariant = (sentiment: string) => {
     switch (sentiment.toLowerCase()) {
       case 'positive':
@@ -69,14 +100,24 @@ export function YapOptimizerClient() {
             rows={8}
             className="text-base"
           />
-          <Button onClick={handleAnalyze} disabled={isLoading} className="w-full">
-            {isLoading ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <BotMessageSquare />
-            )}
-            <span className="ml-2">Analyze & Predict Score</span>
-          </Button>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button onClick={handleAnalyze} disabled={isLoading || isFixing} className="w-full">
+              {isLoading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <BotMessageSquare />
+              )}
+              <span className="ml-2">Analyze & Predict Score</span>
+            </Button>
+            <Button onClick={handleFixTweet} disabled={isFixing || isLoading} variant="outline" className="w-full">
+              {isFixing ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <Wand2 />
+              )}
+              <span className="ml-2">Fix Tweet</span>
+            </Button>
+          </div>
         </CardContent>
       </Card>
       <Card className="flex flex-col items-center justify-center bg-card/50 min-h-[300px]">
