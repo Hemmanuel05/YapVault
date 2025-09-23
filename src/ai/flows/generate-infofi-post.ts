@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -103,46 +102,7 @@ const generateInfoFiPostFlow = ai.defineFlow(
     outputSchema: GenerateInfoFiPostOutputSchema,
   },
   async (input) => {
-    const errorState: GenerateInfoFiPostOutput = {
-        analysisSummary: {
-            sourceMaterial: "Error",
-            keyFinding: "An unexpected error occurred.",
-            marketRelevance: "N/A"
-        },
-        optimizedPosts: [],
-        recommendation: {
-            bestVersion: "N/A",
-            timing: "N/A",
-            followUp: "N/A"
-        }
-    };
-    
-    try {
-        const { output } = await prompt(input);
-        if (!output) {
-            errorState.analysisSummary.keyFinding = "The AI failed to generate a response. The source material may be too short or unclear.";
-            return errorState;
-        }
-
-        // Ensure at least 3 variations are returned as requested in the prompt, adding placeholders if necessary.
-        while (output.optimizedPosts.length < 3) {
-            output.optimizedPosts.push({
-                version: `Placeholder Focus ${output.optimizedPosts.length + 1}`,
-                content: "Could not generate additional variations. Please try refining your source material.",
-                target: "N/A",
-                yapPotential: "Low",
-            });
-        }
-
-        return output;
-    } catch(e: any) {
-        console.error("An error occurred in generateInfoFiPostFlow:", e);
-        const errorMessage = e.message && e.message.includes('429') 
-            ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console for details.";
-
-        errorState.analysisSummary.keyFinding = errorMessage;
-        return errorState;
-    }
+    const {output} = await prompt(input);
+    return output!;
   }
 );

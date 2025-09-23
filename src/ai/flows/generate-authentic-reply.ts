@@ -93,39 +93,7 @@ const generateAuthenticReplyFlow = ai.defineFlow(
     outputSchema: GenerateAuthenticReplyOutputSchema,
   },
   async input => {
-    try {
-        const {output} = await prompt(input);
-        if (!output) {
-          return {
-            reply: 'Error: The AI failed to generate a response. The original post may be unclear.',
-            evaluation: {
-                humanAuthenticity: 0,
-                engagementPotential: 0,
-                algorithmAppeal: 0,
-                controversyLevel: 0,
-                rudenessLevel: 0,
-                overallQuality: 0,
-            }
-          }
-        }
-        return output;
-    } catch (e: any) {
-        console.error("An error occurred in generateAuthenticReplyFlow:", e);
-        const errorMessage = e.message && e.message.includes('429') 
-            ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console.";
-        
-        return {
-            reply: `Error: ${errorMessage}`,
-            evaluation: {
-                humanAuthenticity: 0,
-                engagementPotential: 0,
-                algorithmAppeal: 0,
-                controversyLevel: 0,
-                rudenessLevel: 0,
-                overallQuality: 0,
-            }
-        }
-    }
+    const {output} = await prompt(input);
+    return output!;
   }
 );

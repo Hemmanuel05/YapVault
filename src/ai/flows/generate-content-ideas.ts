@@ -50,31 +50,7 @@ const generateContentIdeasFlow = ai.defineFlow(
     outputSchema: GenerateContentIdeasOutputSchema,
   },
   async input => {
-    try {
-        const {output} = await prompt(input);
-        if (!output) {
-            return {
-                ideas: [{
-                    title: "Error",
-                    idea: "The AI failed to generate a response. The topic might be too vague.",
-                }]
-            }
-        }
-        return output;
-    } catch (e: any) {
-        console.error("An error occurred in generateContentIdeasFlow:", e);
-        const errorMessage = e.message && e.message.includes('429') 
-            ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console for details.";
-
-        return {
-            ideas: [
-                {
-                    title: "Error",
-                    idea: errorMessage,
-                }
-            ]
-        }
-    }
+    const {output} = await prompt(input);
+    return output!;
   }
 );

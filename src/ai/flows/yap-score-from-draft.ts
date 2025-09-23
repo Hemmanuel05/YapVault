@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -89,70 +88,38 @@ const yapScoreFromDraftFlow = ai.defineFlow(
     outputSchema: YapScoreFromDraftOutputSchema,
   },
   async input => {
-    try {
-        const result = await yapScorePrompt(input);
-        const output = result.output;
+    const result = await yapScorePrompt(input);
+    const output = result.output;
 
-        if (!output) {
-            return {
-                yapScore: 0,
-                sentiment: 'unknown',
-                keywords: [],
-                suggestions: ["The AI failed to generate a response. The draft might be too short or unclear."],
-                tweepcredScore: 0,
-                tweepcredSuggestions: ["Analysis could not be completed."],
-            }
-        }
-
-        let score = output.yapScore;
-
-        // Apply keyword boosts
-        const boostKeywords = ['GRID', 'ROMA', 'zkSync', 'Kaia', 'Sophon'];
-        let keywordBoost = 0;
-        for (const kw of boostKeywords) {
-          if (input.draft.toLowerCase().includes(kw.toLowerCase())) {
-              keywordBoost += 0.15 * 10; // 15% of the max score
-          }
-        }
-        score += keywordBoost;
-
-        // Apply sentiment weight
-        if (output.sentiment.toLowerCase() === 'positive') {
-          score *= 1.2; // Giving a 20% boost for positive sentiment
-        } else if (output.sentiment.toLowerCase() === 'negative') {
-          score *= 0.8;
-        }
-
-        // Clamp score between 0 and 10
-        score = Math.max(0, Math.min(10, score));
-
-        // Add a default suggestion if none are returned
-        if (!output.suggestions || output.suggestions.length === 0) {
-            output.suggestions = ["Try asking an open-ended question to encourage more detailed replies."];
-        }
-        if (!output.tweepcredSuggestions || output.tweepcredSuggestions.length === 0) {
-            output.tweepcredSuggestions = ["This post looks good and follows community guidelines. Keep it up!"];
-        }
-        
-        return {
-            ...output,
-            yapScore: parseFloat(score.toFixed(1)),
-        };
-
-    } catch (e: any) {
-        console.error("An error occurred in yapScoreFromDraftFlow:", e);
-        const errorMessage = e.message && e.message.includes('429') 
-            ? "The AI service is currently rate-limited. Please try again in a moment."
-            : "An unexpected error occurred while analyzing the draft. Please check the console for details.";
-
-        return {
-            yapScore: 0,
-            sentiment: 'unknown',
-            keywords: [],
-            suggestions: [errorMessage],
-            tweepcredScore: 0,
-            tweepcredSuggestions: ["Analysis could not be completed."],
-        }
+    if (!output) {
+        throw new Error("AI failed to generate a response.");
     }
+
+    let score = output.yapScore;
+
+    // Apply keyword boosts
+    const boostKeywords = ['GRID', 'ROMA', 'zkSync', 'Kaia', 'Sophon'];
+    let keywordBoost = 0;
+    for (const kw of boostKeywords) {
+      if (input.draft.toLowerCase().includes(kw.toLowerCase())) {
+          keywordBoost += 0.15 * 10; // 15% of the max score
+      }
+    }
+    score += keywordBoost;
+
+    // Apply sentiment weight
+    if (output.sentiment.toLowerCase() === 'positive') {
+      score *= 1.2; // Giving a 20% boost for positive sentiment
+    } else if (output.sentiment.toLowerCase() === 'negative') {
+      score *= 0.8;
+    }
+
+    // Clamp score between 0 and 10
+    score = Math.max(0, Math.min(10, score));
+
+    return {
+        ...output,
+        yapScore: parseFloat(score.toFixed(1)),
+    };
   }
 );

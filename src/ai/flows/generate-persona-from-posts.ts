@@ -54,23 +54,7 @@ const generatePersonaFromPostsFlow = ai.defineFlow(
     outputSchema: GeneratePersonaFromPostsOutputSchema,
   },
   async input => {
-    try {
-        const {output} = await prompt(input);
-        if (!output) {
-          return {
-            persona: 'Error: The AI failed to generate a persona. The posts provided may be too short or lack a clear voice.'
-          }
-        }
-        return output;
-    } catch (e: any) {
-        console.error("An error occurred in generatePersonaFromPostsFlow:", e);
-        const errorMessage = e.message && e.message.includes('429') 
-            ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console for details.";
-        
-        return {
-            persona: `Error: ${errorMessage}`
-        }
-    }
+    const {output} = await prompt(input);
+    return output!;
   }
 );

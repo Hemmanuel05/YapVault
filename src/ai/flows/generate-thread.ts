@@ -53,23 +53,7 @@ const generateThreadFlow = ai.defineFlow(
     outputSchema: GenerateThreadOutputSchema,
   },
   async input => {
-    try {
-        const {output} = await prompt(input);
-        if (!output) {
-          return {
-            thread: ['Error: The AI failed to generate a thread. The source material may be too short or unclear.']
-          }
-        }
-        return output;
-    } catch(e: any) {
-        console.error("An error occurred in generateThreadFlow:", e);
-        const errorMessage = e.message && e.message.includes('429') 
-            ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console for details.";
-        
-        return {
-            thread: [`Error: ${errorMessage}`]
-        }
-    }
+    const {output} = await prompt(input);
+    return output!;
   }
 );

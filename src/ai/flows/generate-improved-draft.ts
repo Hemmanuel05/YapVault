@@ -1,4 +1,3 @@
-
 'use server';
 
 /**
@@ -119,23 +118,7 @@ const generateImprovedDraftFlow = ai.defineFlow(
     outputSchema: GenerateImprovedDraftOutputSchema,
   },
   async (input) => {
-    try {
-        const {output} = await prompt(input);
-        if (!output) {
-          return {
-            improvedDraft: 'Error: The AI failed to improve the draft. It may be too short or unclear.'
-          }
-        }
-        return output;
-    } catch(e: any) {
-        console.error("An error occurred in generateImprovedDraftFlow:", e);
-        const errorMessage = e.message && e.message.includes('429') 
-            ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console for details.";
-        
-        return {
-            improvedDraft: `Error: ${errorMessage}`
-        }
-    }
+    const {output} = await prompt(input);
+    return output!;
   }
 );
