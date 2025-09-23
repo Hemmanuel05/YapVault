@@ -51,7 +51,7 @@ export default function LoginPage() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 required
-                className="bg-background"
+                className="bg-background pr-10"
               />
               <Button
                 type="button"
@@ -60,7 +60,7 @@ export default function LoginPage() {
                 className="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:bg-transparent"
                 onClick={() => setShowPassword((prev) => !prev)}
               >
-                {showPassword ? <EyeOff /> : <Eye />}
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
               </Button>
             </div>
           </div>
