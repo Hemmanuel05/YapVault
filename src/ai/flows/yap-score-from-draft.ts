@@ -23,7 +23,6 @@ const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `# X Algorithm Content Optimizer Prompt (2025 Update)
 
 ## Context & Objectives
@@ -95,7 +94,14 @@ const yapScoreFromDraftFlow = ai.defineFlow(
         const output = result.output;
 
         if (!output) {
-            throw new Error('Failed to get a valid response from the AI.');
+            return {
+                yapScore: 0,
+                sentiment: 'unknown',
+                keywords: [],
+                suggestions: ["The AI failed to generate a response. The draft might be too short or unclear."],
+                tweepcredScore: 0,
+                tweepcredSuggestions: ["Analysis could not be completed."],
+            }
         }
 
         let score = output.yapScore;
@@ -104,17 +110,17 @@ const yapScoreFromDraftFlow = ai.defineFlow(
         const boostKeywords = ['GRID', 'ROMA', 'zkSync', 'Kaia', 'Sophon'];
         let keywordBoost = 0;
         for (const kw of boostKeywords) {
-        if (input.draft.toLowerCase().includes(kw.toLowerCase())) {
-            keywordBoost += 0.15 * 10; // 15% of the max score
-        }
+          if (input.draft.toLowerCase().includes(kw.toLowerCase())) {
+              keywordBoost += 0.15 * 10; // 15% of the max score
+          }
         }
         score += keywordBoost;
 
         // Apply sentiment weight
         if (output.sentiment.toLowerCase() === 'positive') {
-        score *= 1.2; // Giving a 20% boost for positive sentiment
+          score *= 1.2; // Giving a 20% boost for positive sentiment
         } else if (output.sentiment.toLowerCase() === 'negative') {
-        score *= 0.8;
+          score *= 0.8;
         }
 
         // Clamp score between 0 and 10
@@ -134,8 +140,8 @@ const yapScoreFromDraftFlow = ai.defineFlow(
         };
 
     } catch (e: any) {
-        console.error(e);
-        const suggestion = e.message.includes('429') 
+        console.error("An error occurred in yapScoreFromDraftFlow:", e);
+        const errorMessage = e.message && e.message.includes('429') 
             ? "The AI service is currently rate-limited. Please try again in a moment."
             : "An unexpected error occurred while analyzing the draft. Please check the console for details.";
 
@@ -143,7 +149,7 @@ const yapScoreFromDraftFlow = ai.defineFlow(
             yapScore: 0,
             sentiment: 'unknown',
             keywords: [],
-            suggestions: [suggestion],
+            suggestions: [errorMessage],
             tweepcredScore: 0,
             tweepcredSuggestions: ["Analysis could not be completed."],
         }

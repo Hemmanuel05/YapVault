@@ -24,7 +24,6 @@ const prompt = ai.definePrompt({
   name: 'generateContentIdeasPrompt',
   input: {schema: GenerateContentIdeasInputSchema},
   output: {schema: GenerateContentIdeasOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert social media strategist specializing in the crypto and AI space. Your task is to brainstorm engaging post ideas and hooks based on a user's topic.
 
 Generate 5 distinct angles for the given topic. Each idea should be unique and target a different type of engagement.
@@ -53,12 +52,20 @@ const generateContentIdeasFlow = ai.defineFlow(
   async input => {
     try {
         const {output} = await prompt(input);
-        return output!;
+        if (!output) {
+            return {
+                ideas: [{
+                    title: "Error",
+                    idea: "The AI failed to generate a response. The topic might be too vague.",
+                }]
+            }
+        }
+        return output;
     } catch (e: any) {
-        console.error(e);
-        const errorMessage = e.message.includes('429') 
+        console.error("An error occurred in generateContentIdeasFlow:", e);
+        const errorMessage = e.message && e.message.includes('429') 
             ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console.";
+            : "An unexpected error occurred. Please check the console for details.";
 
         return {
             ideas: [

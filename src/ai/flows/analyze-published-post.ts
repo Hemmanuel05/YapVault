@@ -25,7 +25,6 @@ const prompt = ai.definePrompt({
   name: 'analyzePublishedPostPrompt',
   input: {schema: AnalyzePublishedPostInputSchema},
   output: {schema: AnalyzePublishedPostOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert X/Twitter growth strategist. Your task is to provide a "post-mortem" analysis of a user's published post.
 
 Analyze the post based on the following criteria, which are known to be favored by the modern X algorithm:
@@ -62,21 +61,23 @@ const analyzePublishedPostFlow = ai.defineFlow(
   async input => {
     try {
         const {output} = await prompt(input);
-        return output!;
-    } catch (e: any) {
-        console.error(e);
-        // A common error is hitting the rate limit. Let's return a more user-friendly error.
-        if (e.message.includes('429')) {
+        if (!output) {
             return {
                 whatWorked: ["N/A"],
-                couldBeImproved: ["The AI service is currently rate-limited. Please try again in a moment."],
+                couldBeImproved: ["The AI failed to generate a response. The draft might be too short or unclear."],
                 missedOpportunityScore: 0,
             }
         }
-        // For other errors, return a generic error message.
+        return output;
+    } catch (e: any) {
+        console.error("An error occurred in analyzePublishedPostFlow:", e);
+        const errorMessage = e.message && e.message.includes('429') 
+            ? "The AI service is rate-limited. Please try again shortly."
+            : "An unexpected error occurred. Please check the console for details.";
+
         return {
             whatWorked: ["N/A"],
-            couldBeImproved: ["An unexpected error occurred while analyzing the post. Please check the console for details."],
+            couldBeImproved: [errorMessage],
             missedOpportunityScore: 0,
         };
     }

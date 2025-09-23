@@ -25,7 +25,6 @@ const prompt = ai.definePrompt({
   name: 'generateImprovedDraftPrompt',
   input: {schema: GenerateImprovedDraftInputSchema},
   output: {schema: GenerateImprovedDraftOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert social media manager specializing in creating engaging content for X. You understand the modern X algorithm, which prioritizes replies and quality content over hashtags.
 
 You will rewrite the user's draft to make it more engaging, clear, and likely to spark conversation.
@@ -123,14 +122,16 @@ const generateImprovedDraftFlow = ai.defineFlow(
     try {
         const {output} = await prompt(input);
         if (!output) {
-          throw new Error("Failed to get a valid response from the AI.")
+          return {
+            improvedDraft: 'Error: The AI failed to improve the draft. It may be too short or unclear.'
+          }
         }
         return output;
     } catch(e: any) {
-        console.error(e);
-        const errorMessage = e.message.includes('429') 
+        console.error("An error occurred in generateImprovedDraftFlow:", e);
+        const errorMessage = e.message && e.message.includes('429') 
             ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console.";
+            : "An unexpected error occurred. Please check the console for details.";
         
         return {
             improvedDraft: `Error: ${errorMessage}`

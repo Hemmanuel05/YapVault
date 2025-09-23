@@ -25,7 +25,6 @@ const prompt = ai.definePrompt({
   name: 'generatePersonaFromPostsPrompt',
   input: {schema: GeneratePersonaFromPostsInputSchema},
   output: {schema: GeneratePersonaFromPostsOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert brand strategist and social media analyst. Your task is to analyze a collection of a user's past X/Twitter posts and synthesize a concise, insightful persona description.
 
 This persona description should be written in the style of a bio and capture the user's essence.
@@ -57,12 +56,17 @@ const generatePersonaFromPostsFlow = ai.defineFlow(
   async input => {
     try {
         const {output} = await prompt(input);
-        return output!;
+        if (!output) {
+          return {
+            persona: 'Error: The AI failed to generate a persona. The posts provided may be too short or lack a clear voice.'
+          }
+        }
+        return output;
     } catch (e: any) {
-        console.error(e);
-        const errorMessage = e.message.includes('429') 
+        console.error("An error occurred in generatePersonaFromPostsFlow:", e);
+        const errorMessage = e.message && e.message.includes('429') 
             ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console.";
+            : "An unexpected error occurred. Please check the console for details.";
         
         return {
             persona: `Error: ${errorMessage}`

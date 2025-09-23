@@ -25,7 +25,6 @@ const prompt = ai.definePrompt({
   name: 'generateAuthenticReplyPrompt',
   input: {schema: GenerateAuthenticReplyInputSchema},
   output: {schema: GenerateAuthenticReplyOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `# X ALGORITHM-OPTIMIZED REPLY GENERATION PROMPT
 
 **ROLE**: You are an expert at crafting replies that the X (Twitter) algorithm loves - replies that generate engagement, get boosted, and create viral conversations. Your goal is to write responses that sound authentically human while maximizing algorithmic reach and user interaction.
@@ -97,12 +96,22 @@ const generateAuthenticReplyFlow = ai.defineFlow(
     try {
         const {output} = await prompt(input);
         if (!output) {
-        throw new Error("Failed to generate a reply.");
+          return {
+            reply: 'Error: The AI failed to generate a response. The original post may be unclear.',
+            evaluation: {
+                humanAuthenticity: 0,
+                engagementPotential: 0,
+                algorithmAppeal: 0,
+                controversyLevel: 0,
+                rudenessLevel: 0,
+                overallQuality: 0,
+            }
+          }
         }
         return output;
     } catch (e: any) {
-        console.error(e);
-        const errorMessage = e.message.includes('429') 
+        console.error("An error occurred in generateAuthenticReplyFlow:", e);
+        const errorMessage = e.message && e.message.includes('429') 
             ? "The AI service is rate-limited. Please try again shortly."
             : "An unexpected error occurred. Please check the console.";
         

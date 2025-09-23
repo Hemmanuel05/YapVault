@@ -25,7 +25,6 @@ const prompt = ai.definePrompt({
   name: 'generateInfoFiPostPrompt',
   input: {schema: GenerateInfoFiPostInputSchema},
   output: {schema: GenerateInfoFiPostOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `# InfoFi Smart Content Generator (Kaito/Yap Points Optimized)
 
 ## Objective
@@ -104,10 +103,25 @@ const generateInfoFiPostFlow = ai.defineFlow(
     outputSchema: GenerateInfoFiPostOutputSchema,
   },
   async (input) => {
+    const errorState: GenerateInfoFiPostOutput = {
+        analysisSummary: {
+            sourceMaterial: "Error",
+            keyFinding: "An unexpected error occurred.",
+            marketRelevance: "N/A"
+        },
+        optimizedPosts: [],
+        recommendation: {
+            bestVersion: "N/A",
+            timing: "N/A",
+            followUp: "N/A"
+        }
+    };
+    
     try {
         const { output } = await prompt(input);
         if (!output) {
-            throw new Error('Failed to get a valid response from the AI.');
+            errorState.analysisSummary.keyFinding = "The AI failed to generate a response. The source material may be too short or unclear.";
+            return errorState;
         }
 
         // Ensure at least 3 variations are returned as requested in the prompt, adding placeholders if necessary.
@@ -122,24 +136,13 @@ const generateInfoFiPostFlow = ai.defineFlow(
 
         return output;
     } catch(e: any) {
-        console.error(e);
-        const errorMessage = e.message.includes('429') 
+        console.error("An error occurred in generateInfoFiPostFlow:", e);
+        const errorMessage = e.message && e.message.includes('429') 
             ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console.";
+            : "An unexpected error occurred. Please check the console for details.";
 
-        return {
-            analysisSummary: {
-                sourceMaterial: "Error",
-                keyFinding: errorMessage,
-                marketRelevance: "N/A"
-            },
-            optimizedPosts: [],
-            recommendation: {
-                bestVersion: "N/A",
-                timing: "N/A",
-                followUp: "N/A"
-            }
-        };
+        errorState.analysisSummary.keyFinding = errorMessage;
+        return errorState;
     }
   }
 );

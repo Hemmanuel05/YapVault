@@ -24,7 +24,6 @@ const prompt = ai.definePrompt({
   name: 'generateThreadPrompt',
   input: {schema: GenerateThreadInputSchema},
   output: {schema: GenerateThreadOutputSchema},
-  model: 'gemini-1.5-flash-latest',
   prompt: `You are an expert X/Twitter thread writer. Your task is to take the user's source material and create a compelling, easy-to-read thread with a specified number of posts.
 
 **Instructions:**
@@ -56,12 +55,17 @@ const generateThreadFlow = ai.defineFlow(
   async input => {
     try {
         const {output} = await prompt(input);
-        return output!;
+        if (!output) {
+          return {
+            thread: ['Error: The AI failed to generate a thread. The source material may be too short or unclear.']
+          }
+        }
+        return output;
     } catch(e: any) {
-        console.error(e);
-        const errorMessage = e.message.includes('429') 
+        console.error("An error occurred in generateThreadFlow:", e);
+        const errorMessage = e.message && e.message.includes('429') 
             ? "The AI service is rate-limited. Please try again shortly."
-            : "An unexpected error occurred. Please check the console.";
+            : "An unexpected error occurred. Please check the console for details.";
         
         return {
             thread: [`Error: ${errorMessage}`]
