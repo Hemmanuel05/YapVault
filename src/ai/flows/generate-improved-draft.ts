@@ -13,7 +13,6 @@ import {
     type GenerateImprovedDraftInput
 } from '@/ai/schemas/generate-improved-draft';
 import { GenerateImprovedDraftOutput } from '@/ai/schemas/generate-improved-draft';
-import { groq } from '@genkit-ai/groq';
 
 export async function generateImprovedDraft(
   input: GenerateImprovedDraftInput
@@ -23,7 +22,6 @@ export async function generateImprovedDraft(
 
 const prompt = ai.definePrompt({
   name: 'generateImprovedDraftPrompt',
-  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateImprovedDraftInputSchema},
   output: {schema: GenerateImprovedDraftOutputSchema},
   prompt: `You are an expert social media manager specializing in creating engaging content for X. You understand the modern X algorithm, which prioritizes replies and quality content over hashtags.

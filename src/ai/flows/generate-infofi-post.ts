@@ -13,7 +13,6 @@ import {
     type GenerateInfoFiPostInput
 } from '@/ai/schemas/generate-infofi-post';
 import { GenerateInfoFiPostOutput } from '@/ai/schemas/generate-infofi-post';
-import { groq } from '@genkit-ai/groq';
 
 export async function generateInfoFiPost(
   input: GenerateInfoFiPostInput
@@ -23,7 +22,6 @@ export async function generateInfoFiPost(
 
 const prompt = ai.definePrompt({
   name: 'generateInfoFiPostPrompt',
-  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateInfoFiPostInputSchema},
   output: {schema: GenerateInfoFiPostOutputSchema},
   prompt: `# InfoFi Smart Content Generator (Kaito/Yap Points Optimized)

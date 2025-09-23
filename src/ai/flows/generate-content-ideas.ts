@@ -13,7 +13,6 @@ import {
     type GenerateContentIdeasInput,
 } from '@/ai/schemas/generate-content-ideas';
 import { GenerateContentIdeasOutput } from '@/ai/schemas/generate-content-ideas';
-import { groq } from '@genkit-ai/groq';
 
 export async function generateContentIdeas(
   input: GenerateContentIdeasInput
@@ -23,7 +22,6 @@ export async function generateContentIdeas(
 
 const prompt = ai.definePrompt({
   name: 'generateContentIdeasPrompt',
-  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateContentIdeasInputSchema},
   output: {schema: GenerateContentIdeasOutputSchema},
   prompt: `You are an expert social media strategist specializing in the crypto and AI space. Your task is to brainstorm engaging post ideas and hooks based on a user's topic.

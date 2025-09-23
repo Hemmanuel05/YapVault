@@ -13,7 +13,6 @@ import {
     type YapScoreFromDraftInput
 } from '@/ai/schemas/yap-score-from-draft';
 import { YapScoreFromDraftOutput } from '@/ai/schemas/yap-score-from-draft';
-import { groq } from '@genkit-ai/groq';
 
 export async function yapScoreFromDraft(input: YapScoreFromDraftInput): Promise<YapScoreFromDraftOutput> {
   return yapScoreFromDraftFlow(input);
@@ -21,7 +20,6 @@ export async function yapScoreFromDraft(input: YapScoreFromDraftInput): Promise<
 
 const yapScorePrompt = ai.definePrompt({
   name: 'yapScorePrompt',
-  model: groq.model('gemma-7b-it'),
   input: {schema: YapScoreFromDraftInputSchema},
   output: {schema: YapScoreFromDraftOutputSchema},
   prompt: `# X Algorithm Content Optimizer Prompt (2025 Update)
@@ -76,7 +74,7 @@ Analyze the draft for its impact on "TweetCred," X's internal reputation system.
 - Provide a list of suggestions for improving the post to protect or enhance the user's TweetCred.
 
 ### Instructions:
-Analyze the following draft. Provide a Yap Score, a TweetCred score, a sentiment analysis, relevant keywords, and actionable suggestions for both scores based on the framework above.
+Analyze the following draft. Provide a Yap Score, a Tweepcred score, a sentiment analysis, relevant keywords, and actionable suggestions for both scores based on the framework above.
 
 Draft:
 {{{draft}}}

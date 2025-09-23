@@ -13,7 +13,6 @@ import {
     type GenerateAuthenticReplyInput
 } from '@/ai/schemas/generate-authentic-reply';
 import { GenerateAuthenticReplyOutput } from '@/ai/schemas/generate-authentic-reply';
-import { groq } from '@genkit-ai/groq';
 
 
 export async function generateAuthenticReply(
@@ -24,7 +23,6 @@ export async function generateAuthenticReply(
 
 const prompt = ai.definePrompt({
   name: 'generateAuthenticReplyPrompt',
-  model: groq.model('gemma-7b-it'),
   input: {schema: GenerateAuthenticReplyInputSchema},
   output: {schema: GenerateAuthenticReplyOutputSchema},
   prompt: `# X ALGORITHM-OPTIMIZED REPLY GENERATION PROMPT
