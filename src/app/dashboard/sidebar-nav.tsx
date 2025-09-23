@@ -5,7 +5,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
-import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb } from 'lucide-react';
+import { BotMessageSquare, Sparkles, MessageSquareQuote, Lightbulb, MessageCircleQuestion } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -29,6 +29,11 @@ const navItems = [
     href: '/dashboard/content-ideas',
     label: 'Content Ideas',
     icon: <Lightbulb />,
+  },
+  {
+    href: '/dashboard/reply-generator',
+    label: 'Authentic Reply',
+    icon: <MessageCircleQuestion />,
   }
 ];
 
@@ -41,7 +46,7 @@ export function SidebarNav() {
         <SidebarMenuItem key={item.href}>
           <Link href={item.href}>
             <SidebarMenuButton
-              isActive={pathname === item.href}
+              isActive={pathname.startsWith(item.href)}
               tooltip={{ children: item.label, className: 'bg-sidebar-accent text-sidebar-accent-foreground border-sidebar-border' }}
             >
               {item.icon}
