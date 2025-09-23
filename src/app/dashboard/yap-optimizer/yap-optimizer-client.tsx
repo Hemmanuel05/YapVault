@@ -9,7 +9,6 @@ import { useToast } from '@/hooks/use-toast';
 import { BotMessageSquare, Loader2 } from 'lucide-react';
 import { YapScoreGauge } from '@/components/yap-score-gauge';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 
 export function YapOptimizerClient() {
   const [draft, setDraft] = useState('');
@@ -56,7 +55,6 @@ export function YapOptimizerClient() {
     }
   };
 
-
   return (
     <div className="grid gap-8 md:grid-cols-2">
       <Card>
@@ -90,20 +88,26 @@ export function YapOptimizerClient() {
             </div>
         )}
         {result && (
-            <div className="flex w-full flex-col items-center p-6">
+            <div className="flex w-full flex-col items-center p-6 text-center">
                 <p className="text-sm font-medium text-muted-foreground">Predicted Yap Score</p>
                 <YapScoreGauge score={result.yapScore} />
-                <div className="mt-4 flex w-full flex-wrap justify-center gap-4 text-center">
+                <div className="mt-4 grid w-full gap-4 text-center sm:grid-cols-2">
                     <div>
-                        <p className="text-sm text-muted-foreground">Sentiment</p>
+                        <p className="text-sm text-muted-foreground mb-2">Sentiment</p>
                         <Badge variant={getSentimentBadgeVariant(result.sentiment)} className="capitalize">{result.sentiment}</Badge>
                     </div>
                     <div>
-                        <p className="text-sm text-muted-foreground">Keywords</p>
-                        <div className="flex flex-wrap gap-2">
+                        <p className="text-sm text-muted-foreground mb-2">Keywords</p>
+                        <div className="flex flex-wrap gap-2 justify-center">
                         {result.keywords.length > 0 ? result.keywords.map(kw => <Badge key={kw} variant="outline">{kw}</Badge>) : <span className="text-sm text-muted-foreground">None</span>}
                         </div>
                     </div>
+                </div>
+                <div className="mt-6 w-full text-left">
+                  <h4 className="font-semibold mb-2">Suggestions:</h4>
+                  <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
+                    {result.suggestions.map((suggestion, index) => <li key={index}>{suggestion}</li>)}
+                  </ul>
                 </div>
             </div>
         )}

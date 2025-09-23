@@ -21,8 +21,10 @@ export const leaderboardData: LeaderboardEntry[] = [
 ];
 
 export const trendingProjects = [
-    { name: 'Sophon', description: 'Sophon is gaining traction with its new modular blockchain design.' },
-    { name: 'Kaia', description: 'Kaia is trending after announcing a major partnership in the DeFi space.' },
+    { name: 'Sophon', description: 'Modular blockchain built on ZK technology.' },
+    { name: 'Kaia', description: 'Unified blockchain platform combining Klaytn and Finschia.' },
+    { name: 'Initia', description: 'Network for interwoven rollups.' },
+    { name: 'Hyperpie', description: 'Decentralized AI infrastructure.' },
 ];
 
 export type Follower = {

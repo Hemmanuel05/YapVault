@@ -28,7 +28,7 @@ export default function DashboardLayout({
         <SidebarHeader>
           <Link href="/dashboard" className="flex items-center gap-2 text-lg font-semibold text-primary">
             <Logo className="h-6 w-6" />
-            <span className="group-data-[collapsible=icon]:hidden">Kaito Kompass</span>
+            <span className="group-data-[collapsible=icon]:hidden">YapVault</span>
           </Link>
         </SidebarHeader>
         <SidebarContent>

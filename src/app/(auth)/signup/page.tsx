@@ -12,13 +12,27 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+
+const inviteCodes = ['YAP1', 'YAP2', 'YAP3'];
 
 export default function SignupPage() {
   const router = useRouter();
+  const [inviteCode, setInviteCode] = useState('');
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/dashboard');
+    if (inviteCodes.includes(inviteCode)) {
+      router.push('/dashboard');
+    } else {
+      toast({
+        title: 'Invalid Invite Code',
+        description: 'Please enter a valid invite code.',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -26,7 +40,7 @@ export default function SignupPage() {
       <CardHeader>
         <CardTitle className="text-2xl">Sign Up</CardTitle>
         <CardDescription>
-          Create your account to join the Kaito Kompass community.
+          Create your account to join the YapVault community.
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -53,6 +67,8 @@ export default function SignupPage() {
               placeholder="Enter your invite code"
               required
               className="bg-background"
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
             />
           </div>
           <Button type="submit" className="w-full">

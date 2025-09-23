@@ -35,8 +35,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Welcome to Kaito Kompass"
-        description="Your all-in-one toolkit for navigating the Kaito universe."
+        title="Welcome to YapVault"
+        description="Your all-in-one toolkit for navigating the Web3 social landscape."
       />
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (

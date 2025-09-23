@@ -4,8 +4,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 
 export const metadata: Metadata = {
-  title: 'Kaito Kompass',
-  description: 'Invite-only dashboard for the Kaito AI community.',
+  title: 'YapVault',
+  description: 'Invite-only dashboard for the Kaito AI yappers in Web3/crypto.',
 };
 
 export default function RootLayout({
