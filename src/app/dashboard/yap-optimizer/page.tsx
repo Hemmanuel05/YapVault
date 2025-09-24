@@ -3,8 +3,9 @@ import { PageHeader } from '@/components/page-header';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const YapOptimizerClient = dynamic(() => import('./yap-optimizer-client').then(mod => mod.YapOptimizerClient), {
+const YapOptimizerClient = dynamic(() => import('@/app/dashboard/yap-optimizer/yap-optimizer-client'), {
   loading: () => <Skeleton className="h-[600px] w-full" />,
+  ssr: false,
 });
 
 
