@@ -128,7 +128,7 @@ export default function AdminPage() {
       />
       <Card>
         <CardHeader>
-          <CardTitle>Real-Time User Activity</CardTitle>
+          <h2>Real-Time User Activity</h2>
           <CardDescription>
             A live log of all actions taken by users across the application, stored in Firestore.
           </CardDescription>

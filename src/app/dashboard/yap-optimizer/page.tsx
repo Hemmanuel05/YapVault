@@ -1,5 +1,12 @@
 import { PageHeader } from '@/components/page-header';
-import { YapOptimizerClient } from './yap-optimizer-client';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const YapOptimizerClient = dynamic(() => import('./yap-optimizer-client').then(mod => mod.YapOptimizerClient), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[600px] w-full" />,
+});
+
 
 export default function YapOptimizerPage() {
   return (

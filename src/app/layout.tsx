@@ -6,8 +6,8 @@ import { AuthProvider } from '@/hooks/use-auth';
 import { ActivityLogProvider } from '@/hooks/use-activity-log';
 
 export const metadata: Metadata = {
-  title: 'YapVault',
-  description: 'Invite-only dashboard for the Kaito AI yappers in Web3/crypto.',
+  title: 'Kaito Kompass',
+  description: 'Optimize Kaito Yaps and climb leaderboards with YapVault - Web3 growth tool.',
 };
 
 export default function RootLayout({

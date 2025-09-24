@@ -1,5 +1,11 @@
 import { PageHeader } from '@/components/page-header';
-import { ContentIdeasClient } from './content-ideas-client';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const ContentIdeasClient = dynamic(() => import('./content-ideas-client').then(mod => mod.ContentIdeasClient), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[400px] w-full" />,
+});
 
 export default function ContentIdeasPage() {
   return (

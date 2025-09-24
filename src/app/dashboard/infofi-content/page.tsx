@@ -1,5 +1,11 @@
 import { PageHeader } from '@/components/page-header';
-import { InfoFiContentClient } from './infofi-content-client';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const InfoFiContentClient = dynamic(() => import('./infofi-content-client').then(mod => mod.InfoFiContentClient), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[600px] w-full" />,
+});
 
 export default function InfoFiContentPage() {
   return (

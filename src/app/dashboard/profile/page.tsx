@@ -107,7 +107,7 @@ export default function ProfilePage() {
             />
             <Card>
                 <CardHeader>
-                    <CardTitle>Edit Profile</CardTitle>
+                    <h2>Edit Profile</h2>
                     <CardDescription>
                         Loading your profile information...
                     </CardDescription>
@@ -144,7 +144,7 @@ export default function ProfilePage() {
       />
       <Card>
         <CardHeader>
-          <CardTitle>Edit Profile</CardTitle>
+          <h2>Edit Profile</h2>
           <CardDescription>
             Update your public profile information.
           </CardDescription>

@@ -220,7 +220,7 @@ export function YapOptimizerClient() {
     <div className="grid gap-8 md:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>Post Draft</CardTitle>
+          <h2>Post Draft</h2>
           <CardDescription>Analyze a post or have the AI rewrite it for you using a specific persona.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -245,7 +245,7 @@ export function YapOptimizerClient() {
               <p className="text-xs text-muted-foreground">Provide follower count for more accurate authority analysis.</p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
-              <Button onClick={handleAnalyze} disabled={isLoading || isFixing} className="w-full">
+              <Button onClick={handleAnalyze} disabled={isLoading || isFixing} className="w-full" aria-label="Analyze and Predict Score">
                 {isLoading ? (
                   <Loader2 className="animate-spin" />
                 ) : (
@@ -253,7 +253,7 @@ export function YapOptimizerClient() {
                 )}
                 <span className="ml-2">Analyze & Predict Score</span>
               </Button>
-              <Button onClick={handleFixTweet} disabled={isFixing || isLoading} variant="outline" className="w-full">
+              <Button onClick={handleFixTweet} disabled={isFixing || isLoading} variant="outline" className="w-full" aria-label="Fix Tweet">
                   {isFixing ? (
                     <Loader2 className="animate-spin" />
                   ) : (

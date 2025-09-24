@@ -1,5 +1,11 @@
 import { PageHeader } from '@/components/page-header';
-import { ReplyGeneratorClient } from './reply-generator-client';
+import dynamic from 'next/dynamic';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const ReplyGeneratorClient = dynamic(() => import('./reply-generator-client').then(mod => mod.ReplyGeneratorClient), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[500px] w-full" />,
+});
 
 export default function ReplyGeneratorPage() {
   return (
