@@ -1,10 +1,10 @@
+
 'use client';
 import { PageHeader } from '@/components/page-header';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const PostMortemClient = dynamic(() => import('./post-mortem-client').then(mod => mod.PostMortemClient), {
-  ssr: false,
   loading: () => <Skeleton className="h-[400px] w-full" />,
 });
 

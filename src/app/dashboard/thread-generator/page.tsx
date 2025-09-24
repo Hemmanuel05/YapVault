@@ -1,10 +1,10 @@
+
 'use client';
 import { PageHeader } from '@/components/page-header';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const ThreadGeneratorClient = dynamic(() => import('./thread-generator-client').then(mod => mod.ThreadGeneratorClient), {
-  ssr: false,
   loading: () => <Skeleton className="h-[500px] w-full" />,
 });
 
