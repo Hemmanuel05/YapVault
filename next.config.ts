@@ -1,7 +1,7 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  swcMinify: true,
   productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https'
+        protocol: 'https',
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
       // Allow more time for AI actions to complete
       serverActionsTimeout: 120,
     },
-  }
+  },
 };
 
 export default nextConfig;
