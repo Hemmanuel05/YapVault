@@ -1,5 +1,4 @@
 
-'use client';
 import { PageHeader } from '@/components/page-header';
 import dynamic from 'next/dynamic';
 import { Skeleton } from '@/components/ui/skeleton';
