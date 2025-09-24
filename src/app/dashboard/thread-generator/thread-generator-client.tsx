@@ -52,9 +52,10 @@ export function ThreadGeneratorClient() {
       });
     } catch (error) {
       console.error(error);
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
       toast({
         title: 'Generation failed',
-        description: 'Something went wrong. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

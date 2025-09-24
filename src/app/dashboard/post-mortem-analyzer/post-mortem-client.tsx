@@ -42,9 +42,10 @@ export function PostMortemClient() {
       });
     } catch (error) {
       console.error(error);
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
       toast({
         title: 'Analysis failed',
-        description: 'Something went wrong. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {

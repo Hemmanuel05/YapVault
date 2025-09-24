@@ -53,9 +53,10 @@ function GeneratePersonaDialog({ onPersonaGenerated, children }: { onPersonaGene
       });
     } catch (error) {
       console.error(error);
+      const errorMessage = error instanceof Error ? error.message : 'Could not generate a persona. Please try again.';
       toast({
         title: 'Generation Failed',
-        description: 'Could not generate a persona. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
@@ -136,9 +137,10 @@ export function YapOptimizerClient() {
       });
     } catch (error: any) {
       console.error(error);
+      const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred while analyzing the draft.';
       toast({
         title: 'Analysis Failed',
-        description: error.message || 'An unexpected error occurred while analyzing the draft. Please check the console for details.',
+        description: errorMessage,
         variant: 'destructive',
       });
       setResult({
@@ -194,9 +196,10 @@ export function YapOptimizerClient() {
       setResult(null);
     } catch (error) {
       console.error(error);
+      const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
       toast({
         title: 'Failed to fix tweet',
-        description: 'Something went wrong. Please try again.',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
